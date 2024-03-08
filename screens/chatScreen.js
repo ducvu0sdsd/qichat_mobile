@@ -1,16 +1,22 @@
 import React from 'react'
-import { Image, ScrollView, Text, TextInput } from 'react-native'
+import { Image, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native'
 import { View } from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserIcon from '../components/userIcon';
 import MessageSection from '../components/messageSection';
+import { useNavigation } from '@react-navigation/native'
 
 const ChatScreen = () => {
+
+    const navigation = useNavigation();
+
     return (
         <View style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>
-            <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: '10%' }}>
+            <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: '7%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 10 }} />
+                    <TouchableOpacity onPress={() => navigation.navigate('MessageScreen')}>
+                        <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 10 }} />
+                    </TouchableOpacity>
                     <UserIcon />
                     <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontSize: 16, fontWeight: 600 }}>Vu Tien Duc</Text>
