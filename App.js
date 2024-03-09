@@ -1,6 +1,7 @@
 import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import Routes from './routes';
+import GlobalContext from './context/globalContext';
 
 export default function App() {
 
@@ -12,8 +13,10 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      <Routes />
-    </NavigationContainer>
+    <GlobalContext>
+      <NavigationContainer>
+        <Routes />
+      </NavigationContainer>
+    </GlobalContext>
   );
 }
