@@ -5,6 +5,9 @@ import SignInScreen from './screens/signInScreen';
 import SignUpScreen from './screens/signUpScreen';
 import MessageScreen from './screens/messageScreen';
 import ChatScreen from './screens/chatScreen';
+import MessageInformationScreen from './screens/messageInformationScreen';
+import SearchScreen from './screens/SearchScreen';
+import AddingScreen from './screens/addingScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -29,16 +32,28 @@ const Routes = () => {
         {
             name: 'ChatScreen',
             component: ChatScreen
+        },
+        {
+            name: 'MessageInformationScreen',
+            component: MessageInformationScreen
+        },
+        {
+            name: 'SearchScreen',
+            component: SearchScreen,
+        },
+        {
+            name: 'AddingScreen',
+            component: AddingScreen
         }
     ]
 
     return (
-        <Stack.Navigator initialRouteName="PublicScreen">
+        <Stack.Navigator initialRouteName="AddingScreen">
             {screens.map((screen, index) => (
                 <Stack.Screen key={index} name={screen.name} component={screen.component} options={{ headerShown: false }} />
             ))}
         </Stack.Navigator>
     )
 }
-
+export const messageRoutes = ['MessageScreen', 'ChatScreen', 'MessageInformationScreen']
 export default Routes
