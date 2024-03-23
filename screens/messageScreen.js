@@ -28,16 +28,16 @@ const MessageScreen = () => {
     }
 
     return (
-        <>
+        <View style={{ backgroundColor: 'white' }}>
             <View style={{ paddingHorizontal: 15, paddingTop: 30, height: '91%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image source={message} style={{ width: 50, height: 50 }} />
-                        <Text style={{ fontSize: 28, fontWeight: 'bold' }}>Messages</Text>
+                        <Image source={message} style={{ width: 45, height: 45, marginRight: 10 }} />
+                        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Messages</Text>
                     </View>
                     <Image source={data.user?.avatar} style={{ borderRadius: 55, width: 55, height: 55 }} />
                 </View>
-                <View style={{ position: 'relative', marginTop: 15, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#E0E0E0', borderRadius: 25, height: 50 }}>
+                <View style={{ position: 'relative', marginTop: 15, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#F0F3F4', borderRadius: 25, height: 50 }}>
                     <View style={{ position: 'absolute', flexDirection: 'row', justifyContent: returnOption(), width: '100%', height: '100%', top: 0, left: 0, borderRadius: 25, overflow: 'hidden' }}>
                         <Image source={bg} style={{ width: '33%', height: '100%', borderRadius: 25 }} />
                     </View>
@@ -70,7 +70,7 @@ const MessageScreen = () => {
                 </ScrollView>
             </View >
             <Menu />
-        </>
+        </View>
     )
 }
 

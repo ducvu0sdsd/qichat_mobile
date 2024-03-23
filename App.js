@@ -2,6 +2,7 @@ import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import Routes from './routes';
 import GlobalContext from './context/globalContext';
+import { View } from 'react-native';
 
 export default function App() {
 

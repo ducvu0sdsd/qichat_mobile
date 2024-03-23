@@ -20,7 +20,7 @@ const Menu = () => {
 
     return (
         <View style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 100 }}>
-            <View style={{ backgroundColor: '#E0E0E0', justifyContent: 'space-evenly', height: 55, borderRadius: 55, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ backgroundColor: '#F0F3F4', justifyContent: 'space-evenly', height: 55, borderRadius: 55, flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity>
                     <ImageBackground style={{ width: 50, height: 50, borderRadius: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Image source={moon} style={{ width: 38, height: 38 }} />

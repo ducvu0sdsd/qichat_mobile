@@ -9,6 +9,7 @@ import { TypeHTTP, api } from '../utils/api'
 import { formatPhoneByFireBase } from '../utils/call'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { globalContext } from '../context/globalContext'
+import { signWithGoogle } from '../components/firebase/firebase'
 
 const SignInScreen = () => {
 
@@ -29,6 +30,13 @@ const SignInScreen = () => {
             })
             .catch(error => {
                 console.log(error)
+            })
+    }
+
+    const handleSignInWithGoogle = () => {
+        signWithGoogle('sign-in')
+            .then(res => {
+
             })
     }
 
@@ -62,7 +70,7 @@ const SignInScreen = () => {
             <View style={{ marginTop: 15 }}>
                 <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Poppins' }}>Or</Text>
             </View>
-            <TouchableOpacity style={{ marginTop: 15 }}>
+            <TouchableOpacity onPress={() => handleSignInWithGoogle()} style={{ marginTop: 15 }}>
                 <View style={{ borderWidth: 2, borderColor: 'white', paddingVertical: 7, borderRadius: 10, width: 300, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <Icon name='gmail' style={{ color: 'white', fontSize: 25, transform: [{ translateY: -1 }], marginRight: 5 }} />
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Sign in with Gmail</Text>
