@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react'
 import { Image, TouchableOpacity, Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import bg from '../assets/bg.webp'
 import adding from '../assets/icon-adding.png'
 import { globalContext } from '../context/globalContext'

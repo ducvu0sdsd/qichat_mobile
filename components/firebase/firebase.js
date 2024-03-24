@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { TypeHTTP, api } from "../../utils/api";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,21 +25,21 @@ export const signWithGoogle = (type) => new Promise((rejects, resolve) => {
         .then(result => {
             const { email, photoURL } = result.user
             if (type === 'sign-up') {
-                // api({ body: { email, avatar: photoURL }, path: '/sign-up-with-google', type: TypeHTTP.POST, sendToken: false })
-                //     .then(user => {
-                //         rejects(user)
-                //     })
-                //     .catch(error => {
-                //         resolve(error)
-                //     })
+                api({ body: { email, avatar: photoURL }, path: '/sign-up-with-google', type: TypeHTTP.POST, sendToken: false })
+                    .then(user => {
+                        rejects(user)
+                    })
+                    .catch(error => {
+                        resolve(error)
+                    })
             } else if (type === 'sign-in') {
-                // api({ body: { email }, path: '/sign-in-with-google', type: TypeHTTP.POST, sendToken: false })
-                //     .then(user => {
-                //         rejects(user)
-                //     })
-                //     .catch(error => {
-                //         resolve(error)
-                //     })
+                api({ body: { email }, path: '/sign-in-with-google', type: TypeHTTP.POST, sendToken: false })
+                    .then(user => {
+                        rejects(user)
+                    })
+                    .catch(error => {
+                        resolve(error)
+                    })
                 console.log(email, photoURL)
             }
         })

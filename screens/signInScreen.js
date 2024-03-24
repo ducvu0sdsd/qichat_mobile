@@ -10,6 +10,7 @@ import { formatPhoneByFireBase } from '../utils/call'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { globalContext } from '../context/globalContext'
 import { signWithGoogle } from '../components/firebase/firebase'
+import authContext from '../context/authContext'
 
 const SignInScreen = () => {
 
@@ -33,10 +34,18 @@ const SignInScreen = () => {
             })
     }
 
+
+
     const handleSignInWithGoogle = () => {
         signWithGoogle('sign-in')
             .then(res => {
-
+                if (res.user.statusSignUp === 'Complete Step 1') {
+                    handler.setUser(res.user)
+                    navigation.navigate('VerificationScreen')
+                }
+                // if (res.user.statusSignUp === 'Complete Step 2') {
+                //     navigation.navigate('VerificationScreen')
+                // }
             })
     }
 

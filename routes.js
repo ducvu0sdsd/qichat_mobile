@@ -8,15 +8,14 @@ import ChatScreen from './screens/chatScreen';
 import MessageInformationScreen from './screens/messageInformationScreen';
 import SearchScreen from './screens/SearchScreen';
 import AddingScreen from './screens/addingScreen';
+import VerificationScreens from './screens/verificationScreens';
+import InformationScreens from './screens/informationScreen';
+import AuthContext from './context/authContext';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
     const screens = [
-        {
-            name: 'PublicScreen',
-            component: PublicScreen
-        },
         {
             name: 'SignInScreen',
             component: SignInScreen
@@ -24,6 +23,18 @@ const Routes = () => {
         {
             name: 'SignUpScreen',
             component: SignUpScreen
+        },
+        {
+            name: 'VerificationScreen',
+            component: VerificationScreens
+        },
+        {
+            name: 'InformationScreen',
+            component: InformationScreens
+        },
+        {
+            name: 'PublicScreen',
+            component: PublicScreen
         },
         {
             name: 'MessageScreen',
