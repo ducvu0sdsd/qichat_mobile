@@ -1,23 +1,61 @@
-import React, { useState } from 'react';
-import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import bg from '../assets/bg-dung.jpg';
 import banner from '../assets/banner.png';
 import Logo from '../components/logo';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { DatePickerIOS } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Spinner from '../components/spinner';
+import maleIcon from '../assets/male.png'
+import femaleIcon from '../assets/female.png'
+
+
 
 const InformationScreens = () => {
-    const [chosenDate, setChosenDate] = useState(new Date());
-
-    const handleDateChange = (newDate) => {
-        setChosenDate(newDate);
-    };
+    const [gender, setGender] = useState()
+    const [dateOfBirth, setDateOfBirth] = useState(new Date());
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false)
 
     return (
         <ImageBackground
             style={{ height: '100%', width: '100%', position: 'relative', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
             source={bg}
         >
+            {(showPicker || showSpinner) && (
+                <TouchableOpacity onPress={() => { setShowPicker(false); setShowSpinner(false) }} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 10, backgroundColor: '#b2b2b263' }} />
+            )}
+            {showSpinner && (<Spinner setValue={setGender} setShow={setShowSpinner} data={[{ name: 'Male', icon: maleIcon }, { name: 'Female', icon: femaleIcon }]} />)}
+            {showPicker && (
+                <View style={{ flexDirection: 'column', alignItems: 'center', position: 'absolute', backgroundColor: 'white', left: 50, zIndex: 50, borderRadius: 30 }}>
+                    <DateTimePicker
+                        mode="date"
+                        display="spinner"
+                        value={date}
+                        onChange={({ type }, selectedDate) => {
+                            if (type === "set") {
+                                setDateOfBirth(selectedDate)
+                                if (Platform.OS === 'android') {
+                                    setDateOfBirth(selectedDate)
+                                    setShowPicker(false)
+                                    setShowPicker(false)
+                                }
+                            } else {
+                                setShowPicker(false)
+                            }
+                        }}
+                    />
+                    {Platform.OS === 'ios' && (
+                        <View style={{ paddingVertical: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
+                            <TouchableOpacity onPress={() => setShowPicker(false)}>
+                                <Text style={{ fontSize: 17, fontWeight: 'bold' }}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            )}
+
             <View style={{ position: 'absolute', top: 40, left: 20 }}>
                 <Logo />
             </View>
@@ -28,20 +66,26 @@ const InformationScreens = () => {
             <TextInput
                 style={{ marginTop: 20, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
                 placeholder='FullName' />
-            {/* <DatePickerIOS
-                date={chosenDate}
-                onDateChange={handleDateChange} // Handle date change
-                mode="date"
-            /> */}
+            <TouchableOpacity style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }} onPress={() => setShowPicker(true)}>
+                <Text style={{ color: '#999' }}>
+                    {dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear()}
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }} onPress={() => setShowSpinner(true)}>
+                <Text style={{ color: '#999' }}>
+                    {gender ? gender : 'Choose Gender'}
+                </Text>
+            </TouchableOpacity>
             <TextInput
                 style={{ marginTop: 10, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
                 placeholder='Bio' />
+
             <TouchableOpacity style={{ marginTop: 10 }}>
                 <View style={{ paddingVertical: 7, borderRadius: 10, width: 300, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF6E6E' }}>
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Submit</Text>
                 </View>
             </TouchableOpacity>
-        </ImageBackground>
+        </ImageBackground >
     );
 };
 
