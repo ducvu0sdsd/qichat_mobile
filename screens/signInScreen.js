@@ -22,12 +22,20 @@ const SignInScreen = () => {
     const handleSignInWithPhoneNumber = async () => {
         api({ body: { phone: formatPhoneByFireBase(phone), password }, path: '/sign-in', type: TypeHTTP.POST, sendToken: false })
             .then(async (res) => {
-                await AsyncStorage.setItem('accessToken', res.tokens.accessToken)
-                await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken)
-                await AsyncStorage.setItem('user_id', res.user._id)
-                await AsyncStorage.setItem('admin', res.user.admin + '')
-                handler.setUser(res.user)
-                navigation.navigate('MessageScreen')
+                if (res.user.statusSignUp === 'Complete Step 1') {
+                    handler.setUser(res.user)
+                    navigation.navigate('VerificationScreen')
+                } else if (res.user.statusSignUp === 'Complete Step 2') {
+                    handler.setUser(res.user)
+                    navigation.navigate('InformationScreen')
+                } else if (res.user.statusSignUp === 'Complete Sign Up') {
+                    await AsyncStorage.setItem('accessToken', res.tokens.accessToken)
+                    await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken)
+                    await AsyncStorage.setItem('user_id', res.user._id)
+                    await AsyncStorage.setItem('admin', res.user.admin + '')
+                    handler.setUser(res.user)
+                    navigation.navigate('MessageScreen')
+                }
             })
             .catch(error => {
                 console.log(error)

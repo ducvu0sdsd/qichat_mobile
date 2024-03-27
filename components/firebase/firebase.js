@@ -2,11 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { TypeHTTP, api } from "../../utils/api";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import 'firebase/compat/firestore'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBR4J1CMe6-pDh6-AyEHVwpQxL3_HmOQWE",
     authDomain: "fir-qichat.firebaseapp.com",
     projectId: "fir-qichat",
@@ -14,6 +17,10 @@ const firebaseConfig = {
     messagingSenderId: "1015562703159",
     appId: "1:1015562703159:web:440b1032c64d70617f0ab2"
 };
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig)
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
