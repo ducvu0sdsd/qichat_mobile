@@ -42,10 +42,13 @@ const SignInScreen = () => {
                 if (res.user.statusSignUp === 'Complete Step 1') {
                     handler.setUser(res.user)
                     navigation.navigate('VerificationScreen')
+                } else if (res.user.statusSignUp === 'Complete Step 2') {
+                    handler.setUser(res.user)
+                    navigation.navigate('InformationScreen')
+                } else if (res.user.statusSignUp === 'Complete Sign Up') {
+                    handler.setUser(res.user)
+                    navigation.navigate('MessageScreen')
                 }
-                // if (res.user.statusSignUp === 'Complete Step 2') {
-                //     navigation.navigate('VerificationScreen')
-                // }
             })
     }
 

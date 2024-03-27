@@ -59,7 +59,7 @@ const Routes = () => {
     ]
 
     return (
-        <Stack.Navigator initialRouteName="InformationScreen">
+        <Stack.Navigator initialRouteName="PublicScreen">
             {screens.map((screen, index) => (
                 <Stack.Screen key={index} name={screen.name} component={screen.component} options={{ headerShown: false }} />
             ))}

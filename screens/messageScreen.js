@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import avatar from '../assets/avatar.jpg'
 import bg from '../assets/bg.webp'
@@ -18,6 +18,10 @@ const MessageScreen = () => {
     const [currentOption, setCurrentOption] = useState(options.CHATS)
     const { data } = useContext(globalContext)
 
+    useEffect(() => {
+        console.log(data)
+    })
+
     const returnOption = () => {
         if (currentOption === options.CHATS)
             return 'flex-start'
@@ -35,7 +39,7 @@ const MessageScreen = () => {
                         <Image source={message} style={{ width: 45, height: 45, marginRight: 10 }} />
                         <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Messages</Text>
                     </View>
-                    <Image source={data.user?.avatar} style={{ borderRadius: 55, width: 55, height: 55 }} />
+                    <Image source={{ uri: data.user?.avatar }} style={{ borderRadius: 55, width: 55, height: 55 }} />
                 </View>
                 <View style={{ position: 'relative', marginTop: 15, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#F0F3F4', borderRadius: 25, height: 50 }}>
                     <View style={{ position: 'absolute', flexDirection: 'row', justifyContent: returnOption(), width: '100%', height: '100%', top: 0, left: 0, borderRadius: 25, overflow: 'hidden' }}>

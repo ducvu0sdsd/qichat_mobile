@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import bg from '../assets/bg-dung.jpg';
 import banner from '../assets/banner.png';
@@ -8,15 +8,41 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Spinner from '../components/spinner';
 import maleIcon from '../assets/male.png'
 import femaleIcon from '../assets/female.png'
+import { TypeHTTP, api } from '../utils/api';
+import { globalContext } from '../context/globalContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const InformationScreens = () => {
+    const navigation = useNavigation()
     const [gender, setGender] = useState()
+    const [fullName, setFullName] = useState()
+    const [bio, setBio] = useState()
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false)
+    const { data, handler } = useContext(globalContext)
+
+    const handleSubmit = () => {
+
+        api({ type: TypeHTTP.PUT, body: { fullName, dateOfBirth, bio, gender, statusSignUp: 'Complete Sign Up' }, path: `/users/${data.user?._id}`, sendToken: false })
+            .then(res => {
+                if (res) {
+                    api({ type: TypeHTTP.POST, path: '/generate-tokens', body: { user_id: res?._id, admin: res?.admin }, sendToken: false })
+                        .then(async (tokens) => {
+                            await AsyncStorage.setItem('accessToken', tokens.accessToken)
+                            await AsyncStorage.setItem('refreshToken', tokens.refreshToken)
+                            await AsyncStorage.setItem('user_id', res?._id)
+                            await AsyncStorage.setItem('admin', res?.admin)
+                            handler.setUser(res)
+                            navigation.navigate('MessageScreen')
+                        })
+                }
+            })
+    }
 
     return (
         <ImageBackground
@@ -64,8 +90,9 @@ const InformationScreens = () => {
                 source={banner} />
             <Text style={{ color: 'white', fontSize: 20, paddingHorizontal: 30, textAlign: 'center', marginVertical: 10 }}>{`We sent you an authentication code using your phone number ()`}</Text>
             <TextInput
+                onChangeText={e => setFullName(e)}
                 style={{ marginTop: 20, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
-                placeholder='FullName' />
+                placeholder='FullName' value={fullName} />
             <TouchableOpacity style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }} onPress={() => setShowPicker(true)}>
                 <Text style={{ color: '#999' }}>
                     {dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear()}
@@ -78,9 +105,9 @@ const InformationScreens = () => {
             </TouchableOpacity>
             <TextInput
                 style={{ marginTop: 10, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
-                placeholder='Bio' />
+                placeholder='Bio' onChangeText={e => setBio(e)} value={bio} />
 
-            <TouchableOpacity style={{ marginTop: 10 }}>
+            <TouchableOpacity onPress={() => handleSubmit()} style={{ marginTop: 10 }}>
                 <View style={{ paddingVertical: 7, borderRadius: 10, width: 300, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF6E6E' }}>
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Submit</Text>
                 </View>

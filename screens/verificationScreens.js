@@ -38,7 +38,12 @@ const VerificationScreens = () => {
     const handleSubmitOTPWithGmail = () => {
         api({ type: TypeHTTP.POST, sendToken: false, path: '/verify-gmail', body: { code: otp, email } })
             .then(res => {
-                navigation.navigate('InformationScreen')
+                api({ type: TypeHTTP.PUT, body: { statusSignUp: 'Complete Step 2' }, path: `/users/${data.user?._id}`, sendToken: false })
+                    .then(res => {
+                        if (res) {
+                            navigation.navigate('InformationScreen')
+                        }
+                    })
             })
         // .catch(error => {
         //     handler.notify(notifyType.FAIL, error.message.data)
