@@ -17,12 +17,13 @@ const ChatScreen = () => {
     const navigation = useNavigation();
 
     const route = useRoute()
-    useEffect(async () => {
-        const goal = await handler.checkToken(route.name)
-        if (goal !== null)
-            navigation.navigate(goal)
-    }, [route.name])
-
+    useEffect(() => {
+        handler.checkToken(route.name)
+            .then(goal => {
+                if (goal !== null)
+                    navigation.navigate(goal)
+            })
+    }, [])
 
     return (
         <View style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>

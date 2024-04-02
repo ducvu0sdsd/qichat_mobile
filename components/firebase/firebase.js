@@ -10,12 +10,13 @@ import 'firebase/compat/firestore'
 
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyBR4J1CMe6-pDh6-AyEHVwpQxL3_HmOQWE",
-    authDomain: "fir-qichat.firebaseapp.com",
-    projectId: "fir-qichat",
-    storageBucket: "fir-qichat.appspot.com",
-    messagingSenderId: "1015562703159",
-    appId: "1:1015562703159:web:440b1032c64d70617f0ab2"
+    apiKey: "AIzaSyCsnPmi-wt1yQ_wyy7Ly4h90mRrzzVYlgE",
+    authDomain: "qichat-fe150.firebaseapp.com",
+    projectId: "qichat-fe150",
+    storageBucket: "qichat-fe150.appspot.com",
+    messagingSenderId: "325928910574",
+    appId: "1:325928910574:web:5524cbb44293230525fdff",
+    measurementId: "G-KQ45TTZL23"
 };
 
 if (!firebase.apps.length) {

@@ -10,12 +10,15 @@ const PublicScreen = () => {
 
     const navigation = useNavigation();
     const { handler } = useContext(globalContext)
+
     const route = useRoute()
-    useEffect(async () => {
-        const goal = await handler.checkToken(route.name)
-        if (goal !== null)
-            navigation.navigate(goal)
-    }, [route.name])
+    useEffect(() => {
+        handler.checkToken(route.name)
+            .then(goal => {
+                if (goal !== null)
+                    navigation.navigate(goal)
+            })
+    }, [])
 
     return (
         <ImageBackground

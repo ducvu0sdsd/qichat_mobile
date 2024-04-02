@@ -29,14 +29,16 @@ const SearchScreen = () => {
             return 'flex-end'
     }
     const route = useRoute()
-    useEffect(async () => {
-        const goal = await handler.checkToken(route.name)
-        if (goal !== null)
-            navigation.navigate(goal)
-    }, [route.name])
+    useEffect(() => {
+        handler.checkToken(route.name)
+            .then(goal => {
+                if (goal !== null)
+                    navigation.navigate(goal)
+            })
+    }, [])
 
     return (
-        <View style={{ backgroundColor: 'white' }}>
+        <View style={{ backgroundColor: 'white', height: '100%' }}>
             <View style={{ paddingHorizontal: 15, paddingTop: 50, height: '91%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

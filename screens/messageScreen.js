@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import avatar from '../assets/avatar.jpg'
 import bg from '../assets/bg.webp'
 import UserMessage from '../components/userMessage'
 import Menu from '../components/menu'
 import message from '../assets/icon-message.png'
 import { globalContext } from '../context/globalContext'
 import { TypeHTTP, api } from '../utils/api'
-import UserIcon from '../components/userIcon'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 export const options = {
     CHATS: 'a',
@@ -17,25 +15,24 @@ export const options = {
 }
 
 const MessageScreen = () => {
-
+    const navigation = useNavigation()
     const [currentOption, setCurrentOption] = useState(options.CHATS)
     const [rooms, setRooms] = useState([])
     const { data, handler } = useContext(globalContext)
 
     const route = useRoute()
-    useEffect(async () => {
-        const goal = await handler.checkToken(route.name)
-        if (goal !== null)
-            navigation.navigate(goal)
-    }, [route.name])
+    useEffect(() => {
+        handler.checkToken(route.name)
+            .then(goal => {
+                if (goal !== null)
+                    navigation.navigate(goal)
+            })
+    }, [])
 
     useEffect(() => {
         api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
             .then(rooms => setRooms(rooms))
     }, [])
-
-
-
 
     const returnOption = () => {
         if (currentOption === options.CHATS)
@@ -54,7 +51,9 @@ const MessageScreen = () => {
                         <Image source={message} style={{ width: 45, height: 45, marginRight: 10 }} />
                         <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Messages</Text>
                     </View>
-                    <Image source={{ uri: data.user?.avatar }} style={{ borderRadius: 55, width: 55, height: 55 }} />
+                    <TouchableOpacity onPress={() => navigation.navigate('EditingProfile')}>
+                        <Image source={{ uri: data.user?.avatar }} style={{ borderRadius: 55, width: 55, height: 55 }} />
+                    </TouchableOpacity>
                 </View>
                 <View style={{ position: 'relative', marginTop: 15, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#F0F3F4', borderRadius: 25, height: 50 }}>
                     <View style={{ position: 'absolute', flexDirection: 'row', justifyContent: returnOption(), width: '100%', height: '100%', top: 0, left: 0, borderRadius: 25, overflow: 'hidden' }}>
