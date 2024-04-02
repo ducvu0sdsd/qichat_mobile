@@ -11,7 +11,7 @@ import femaleIcon from '../assets/female.png'
 import { TypeHTTP, api } from '../utils/api';
 import { globalContext } from '../context/globalContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 
@@ -25,6 +25,13 @@ const InformationScreens = () => {
     const [showPicker, setShowPicker] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false)
     const { data, handler } = useContext(globalContext)
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     const handleSubmit = () => {
 

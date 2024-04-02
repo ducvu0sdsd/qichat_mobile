@@ -8,6 +8,7 @@ import adding from '../assets/icon-adding.png'
 import logout from '../assets/icon-logout.png'
 import bg from '../assets/bg-circle.png'
 import { messageRoutes } from '../routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Menu = () => {
 
@@ -17,6 +18,12 @@ const Menu = () => {
     useEffect(() => {
         setPathName(route.name)
     }, [route.name])
+
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem('accessToken')
+        await AsyncStorage.removeItem('refreshToken')
+        navigation.navigate('PublicScreen')
+    }
 
     return (
         <View style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 100 }}>
@@ -41,7 +48,7 @@ const Menu = () => {
                         <Image source={adding} style={{ width: 38, height: 38 }} />
                     </ImageBackground>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => handleLogout()}>
                     <ImageBackground style={{ width: 50, height: 50, borderRadius: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Image source={logout} style={{ width: 38, height: 38 }} />
                     </ImageBackground>

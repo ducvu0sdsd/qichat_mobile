@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
 import Logo from '../components/logo'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { signWithGoogle } from '../components/firebase/firebase'
 import { globalContext } from '../context/globalContext'
 import { TypeHTTP, api } from '../utils/api'
@@ -17,6 +17,12 @@ const SignUpScreen = () => {
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     const handleSignUpWithPhoneNumber = async () => {
         if (password !== confirmPassword) {

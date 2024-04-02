@@ -6,6 +6,9 @@ import UserMessage from '../components/userMessage'
 import Menu from '../components/menu'
 import message from '../assets/icon-message.png'
 import { globalContext } from '../context/globalContext'
+import { TypeHTTP, api } from '../utils/api'
+import UserIcon from '../components/userIcon'
+import { useRoute } from '@react-navigation/native'
 
 export const options = {
     CHATS: 'a',
@@ -16,11 +19,23 @@ export const options = {
 const MessageScreen = () => {
 
     const [currentOption, setCurrentOption] = useState(options.CHATS)
-    const { data } = useContext(globalContext)
+    const [rooms, setRooms] = useState([])
+    const { data, handler } = useContext(globalContext)
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     useEffect(() => {
-        console.log(data)
-    })
+        api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
+            .then(rooms => setRooms(rooms))
+    }, [])
+
+
+
 
     const returnOption = () => {
         if (currentOption === options.CHATS)
@@ -32,7 +47,7 @@ const MessageScreen = () => {
     }
 
     return (
-        <View style={{ backgroundColor: 'white' }}>
+        <View style={{ backgroundColor: 'white', height: '100%' }}>
             <View style={{ paddingHorizontal: 15, paddingTop: 30, height: '91%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -56,21 +71,9 @@ const MessageScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 15, marginHorizontal: 5 }}>
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
-                    <UserMessage />
+                    {rooms.map((room, index) => {
+                        return <UserMessage key={index} room={room} />
+                    })}
                 </ScrollView>
             </View >
             <Menu />

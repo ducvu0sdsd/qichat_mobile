@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Image, ImageBackground, Text, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
 import Logo from '../components/logo';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { globalContext } from '../context/globalContext';
 
 const PublicScreen = () => {
 
     const navigation = useNavigation();
+    const { handler } = useContext(globalContext)
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     return (
         <ImageBackground

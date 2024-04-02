@@ -1,34 +1,59 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native'
 import { View } from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserIcon from '../components/userIcon';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { messageContext } from '../context/messageContext';
 import bg from '../assets/bg.webp'
 import avatar from '../assets/avatar.jpg'
+import { globalContext } from '../context/globalContext';
+import { returnID, returnImage, returnName, returnRemainingObject } from '../utils/room';
+import { tinhSoPhutCham } from '../utils/time';
 
 
 const MessageInformationScreen = () => {
     const navigation = useNavigation();
+    const { data, handler } = useContext(globalContext)
+    const { messageData } = useContext(messageContext)
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     return (
 
         <View style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>
-            {/* <View style={{ alignItems: 'flex-start' }}>
-                <TouchableOpacity onPress={() => navigation.navigate('MessageScreen')}>
-                    <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 10, marginBottom: 60 }} />
+            <View style={{ position: 'absolute' }}>
+                <TouchableOpacity onPress={() => navigation.navigate('ChatScreen')}>
+                    <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 10 }} />
                 </TouchableOpacity>
-            </View> */}
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 9, width: '100%' }}>
                     <View style={{ top: 35 }}>
-                        <View>
-                            <Image source={avatar} style={{ borderRadius: 55, width: 100, height: 100 }} />
+                        <View style={{ alignItems: 'center' }}  >
+                            <UserIcon avatar={returnImage(messageData.currentRoom, data.user)} />
+                            <Text style={{ fontSize: 18, fontWeight: 600 }}>{returnName(messageData.currentRoom, data.user)}</Text>
                         </View>
                     </View>
                     <View style={{ alignItems: 'center', marginTop: 40 }}>
-                        <Text style={{ fontSize: 25, fontWeight: '600' }}>Vu Tien Duc</Text>
-                        <Text style={{ fontSize: 15, marginLeft: 3, fontWeight: '600' }}>In Operation</Text>
+                        <Text style={{ fontSize: 25, fontWeight: '600' }}>{ }</Text>
+                        <Text style={{ fontSize: 15, marginLeft: 3, fontWeight: '600' }}>{
+                            messageData.currentRoom.type === 'Single' ?
+                                data.user.friends.map(user => user._id).includes(returnID(messageData.currentRoom, data.user)) ?
+                                    returnRemainingObject(messageData.currentRoom, data.user).operating.status === true ?
+                                        "Online"
+                                        :
+                                        `Operated in ${tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user).operating.time) ? tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user).operating.time) : '0 second'} ago`
+                                    :
+                                    "Stranger"
+                                :
+                                `${messageData.currentRoom.users.length} Participants`
+                        }</Text>
                     </View>
                 </View>
             </View>

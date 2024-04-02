@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
@@ -10,6 +10,7 @@ import { formatPhoneByFireBase } from '../utils/call'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { globalContext } from '../context/globalContext'
 import { signWithGoogle } from '../components/firebase/firebase'
+import { useRoute } from '@react-navigation/native';
 import authContext from '../context/authContext'
 
 const SignInScreen = () => {
@@ -18,6 +19,13 @@ const SignInScreen = () => {
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
     const { handler } = useContext(globalContext)
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     const handleSignInWithPhoneNumber = async () => {
         api({ body: { phone: formatPhoneByFireBase(phone), password }, path: '/sign-in', type: TypeHTTP.POST, sendToken: false })
@@ -46,7 +54,7 @@ const SignInScreen = () => {
 
     const handleSignInWithGoogle = () => {
         signWithGoogle('sign-in')
-            .then(res => {
+            .then(async res => {
                 if (res.user.statusSignUp === 'Complete Step 1') {
                     handler.setUser(res.user)
                     navigation.navigate('VerificationScreen')
@@ -54,6 +62,10 @@ const SignInScreen = () => {
                     handler.setUser(res.user)
                     navigation.navigate('InformationScreen')
                 } else if (res.user.statusSignUp === 'Complete Sign Up') {
+                    await AsyncStorage.setItem('accessToken', res.tokens.accessToken)
+                    await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken)
+                    await AsyncStorage.setItem('user_id', res.user._id)
+                    await AsyncStorage.setItem('admin', res.user.admin + '')
                     handler.setUser(res.user)
                     navigation.navigate('MessageScreen')
                 }

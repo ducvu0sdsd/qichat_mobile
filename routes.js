@@ -11,9 +11,11 @@ import AddingScreen from './screens/addingScreen';
 import VerificationScreens from './screens/verificationScreens';
 import InformationScreens from './screens/informationScreen';
 import AuthContext from './context/authContext';
+import { useRoute } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
+
 
     const screens = [
         {
@@ -59,7 +61,7 @@ const Routes = () => {
     ]
 
     return (
-        <Stack.Navigator initialRouteName="PublicScreen">
+        <Stack.Navigator initialRouteName="SignInScreen">
             {screens.map((screen, index) => (
                 <Stack.Screen key={index} name={screen.name} component={screen.component} options={{ headerShown: false }} />
             ))}

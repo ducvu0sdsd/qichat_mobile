@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Routes from './routes';
 import GlobalContext from './context/globalContext';
 import { View } from 'react-native';
+import MessageContext from './context/messageContext';
 
 export default function App() {
 
@@ -15,9 +16,11 @@ export default function App() {
 
   return (
     <GlobalContext>
-      <NavigationContainer>
-        <Routes />
-      </NavigationContainer>
+      <MessageContext>
+        <NavigationContainer>
+          <Routes />
+        </NavigationContainer>
+      </MessageContext>
     </GlobalContext>
   );
 }

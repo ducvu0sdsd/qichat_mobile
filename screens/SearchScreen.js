@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import avatar from '../assets/avatar.jpg'
 import bg from '../assets/bg.webp'
@@ -10,6 +10,7 @@ import UserSearchGroup from '../components/userSearchGroup';
 import { globalContext } from '../context/globalContext'
 import UserSearch from '../components/userSearch';
 import friends from '../assets/icon-friends.png'
+import { useRoute } from '@react-navigation/native';
 
 const options = {
     FRIEND: 'a',
@@ -18,7 +19,7 @@ const options = {
 
 const SearchScreen = () => {
 
-    const { data } = useContext(globalContext)
+    const { data, handler } = useContext(globalContext)
     const [currentOption, setCurrentOption] = useState(options.FRIEND)
     const returnOption = () => {
         if (currentOption === options.FRIEND)
@@ -27,6 +28,12 @@ const SearchScreen = () => {
         if (currentOption === options.GROUP)
             return 'flex-end'
     }
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     return (
         <View style={{ backgroundColor: 'white' }}>

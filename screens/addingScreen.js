@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, TouchableOpacity, Text, View } from 'react-native'
 import bg from '../assets/bg.webp'
 import adding from '../assets/icon-adding.png'
@@ -7,6 +7,7 @@ import Menu from '../components/menu'
 import FriendsRequestLayout from '../components/layouts/friendsRequestLayout';
 import CreateGroupLayout from '../components/layouts/createGroupLayout';
 import AddFriendLayout from '../components/layouts/addFriendLayout';
+import { useRoute } from '@react-navigation/native'
 export const options = {
     ADD_FRIEND: 'a',
     CREATE_GROUP: 'b',
@@ -15,7 +16,14 @@ export const options = {
 
 const AddingScreen = () => {
     const [currentOption, setCurrentOption] = useState(options.ADD_FRIEND)
-    const { data } = useContext(globalContext)
+    const { data, handler } = useContext(globalContext)
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     const returnOption = () => {
         if (currentOption === options.ADD_FRIEND)

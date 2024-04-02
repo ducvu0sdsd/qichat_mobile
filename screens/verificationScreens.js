@@ -6,7 +6,7 @@ import Logo from '../components/logo'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { globalContext } from '../context/globalContext'
 import { RecaptchaVerifier, reauthenticateWithCredential, signInWithPhoneNumber } from 'firebase/auth'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { TypeHTTP, api } from '../utils/api'
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha'
 import firebase from 'firebase/compat/app'
@@ -19,7 +19,7 @@ const VerificationScreens = () => {
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [otp, setOtp] = useState('')
-    const { data } = useContext(globalContext)
+    const { data, handler } = useContext(globalContext)
     const [verification, setVerification] = useState()
     const recaptchaRef = useRef()
 
@@ -30,6 +30,13 @@ const VerificationScreens = () => {
             setPhone(data.user?.phone)
         }
     }, [data.user])
+
+    const route = useRoute()
+    useEffect(async () => {
+        const goal = await handler.checkToken(route.name)
+        if (goal !== null)
+            navigation.navigate(goal)
+    }, [route.name])
 
     useEffect(() => {
         if (data.user?.phone) {
