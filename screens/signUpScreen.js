@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
 import Logo from '../components/logo'
@@ -27,11 +27,20 @@ const SignUpScreen = () => {
     }, [])
 
     const handleSignUpWithPhoneNumber = async () => {
-        if (password !== confirmPassword) {
+        if (!/^\d{10}$/.test(phone)) {
+            console.log('Invalid Phone')
+            // handler.showAlert('Warning', 'Invalid Phone', () => { }, () => { })
             return
         }
-        if (phone === '')
+        if (password.length < 6) {
+            console.log("Password must be getter than 6 characters")
             return
+        }
+
+        if (confirmPassword !== password) {
+            console.log("Confirm Password must be match with password")
+            return
+        }
         api({ body: { phone: formatPhoneByFireBase(phone), password }, path: '/sign-up', type: TypeHTTP.POST, sendToken: false })
             .then(async (res) => {
                 handler.setUser(res)
@@ -69,11 +78,13 @@ const SignUpScreen = () => {
             <TextInput
                 value={password}
                 onChangeText={e => setPassword(e)}
+                secureTextEntry={true}
                 style={{ marginTop: 7, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
                 placeholder='Password' />
             <TextInput
                 value={confirmPassword}
                 onChangeText={e => setConfirmPassword(e)}
+                secureTextEntry={true}
                 style={{ marginTop: 7, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
                 placeholder='Confirm Password' />
             <TouchableOpacity onPress={() => handleSignUpWithPhoneNumber()} style={{ marginTop: 10 }}>

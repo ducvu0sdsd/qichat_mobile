@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
 import UserIcon from '../userIcon'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Phone from 'react-native-vector-icons/SimpleLineIcons';
@@ -20,11 +20,11 @@ const AddFriendLayout = () => {
                 </View>
             </View>
             <View style={{ flexDirection: 'col', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-                <Text style={{ borderWidth: 1, borderColor: 'black', padding: 8, borderRadius: 10, top: 20, width: '80%', flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity style={{ borderWidth: 1, borderColor: 'black', padding: 8, borderRadius: 10, top: 20, width: '80%', flexDirection: 'row', alignItems: 'center' }}>
                     <Icon name='web' style={{ fontSize: 20 }} />
                     <Text style={{ fontSize: 13, fontWeight: '700' }}>  Add Friend By Name</Text>
-                </Text>
-                <Text style={{ borderWidth: 1, borderColor: 'black', padding: 8, borderRadius: 10, top: 20, width: '80%', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                </TouchableOpacity>
+                {/* <Text style={{ borderWidth: 1, borderColor: 'black', padding: 8, borderRadius: 10, top: 20, width: '80%', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                     <Icon name='email-outline' style={{ fontSize: 20 }} />
                     <Text style={{ fontSize: 13, fontWeight: '700' }}>  Add Friend By Gmail</Text>
                 </Text>
@@ -35,7 +35,7 @@ const AddFriendLayout = () => {
                 <Text style={{ borderWidth: 1, borderColor: 'black', padding: 8, borderRadius: 10, top: 20, width: '80%', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                     <Text style={{ backgroundColor: '#C0C0C0', }} >+84 </Text>
                     <Text style={{}}> Enter Phone Number </Text>
-                </Text>
+                </Text> */}
 
             </View>
 

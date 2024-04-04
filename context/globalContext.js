@@ -1,16 +1,38 @@
 import React, { createContext, useState } from 'react'
 import { TypeHTTP, api } from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 export const globalContext = createContext()
 
 const GlobalContext = ({ children }) => {
     const [user, setUser] = useState()
 
+    const showAlert = (title, message, onCancel, onOK) => {
+        Alert.alert(
+            title,
+            message,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: onCancel,
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK',
+                    onPress: onOK
+                }
+            ],
+            { cancelable: false }
+        );
+    };
+
     const checkToken = (pathname) => new Promise(async (resolve, reject) => {
         const publics = ['SignInScreen', 'SignUpScreen', 'VerificationScreen', 'InformationScreen', 'PublicScreen']
         const accessToken = await AsyncStorage.getItem('accessToken')
         const refreshToken = await AsyncStorage.getItem('refreshToken')
+        // await AsyncStorage.removeItem('accessToken')
+        // await AsyncStorage.removeItem('refreshToken')
         if (!accessToken)
             if (!refreshToken)
                 if (!publics.includes(pathname))
@@ -52,7 +74,8 @@ const GlobalContext = ({ children }) => {
 
     const handler = {
         setUser,
-        checkToken
+        checkToken,
+        showAlert
     }
 
     return (

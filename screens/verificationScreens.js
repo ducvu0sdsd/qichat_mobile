@@ -53,6 +53,9 @@ const VerificationScreens = () => {
     }, [data.user]);
 
     const handleSubmitOTPWithPhoneNumber = () => {
+        if (otp === '')
+            return
+
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verification, otp
         )
@@ -69,6 +72,11 @@ const VerificationScreens = () => {
 
 
     const handleSubmitOTPWithGmail = () => {
+        if (otp === '') {
+            console.log("Please Enter OTP code")
+            return
+        }
+
         api({ type: TypeHTTP.POST, sendToken: false, path: '/verify-gmail', body: { code: otp, email } })
             .then(res => {
                 api({ type: TypeHTTP.PUT, body: { statusSignUp: 'Complete Step 2' }, path: `/users/${data.user?._id}`, sendToken: false })

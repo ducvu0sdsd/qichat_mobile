@@ -30,6 +30,15 @@ const SignInScreen = () => {
     }, [])
 
     const handleSignInWithPhoneNumber = async () => {
+        if (!/^\d{10}$/.test(phone)) {
+            console.log('Invalid Phone')
+            // handler.showAlert('Warning', 'Invalid Phone', () => { }, () => { })
+            return
+        }
+        if (password.length < 6) {
+            console.log("Password must be getter than 6 characters")
+            return
+        }
         api({ body: { phone: formatPhoneByFireBase(phone), password }, path: '/sign-in', type: TypeHTTP.POST, sendToken: false })
             .then(async (res) => {
                 if (res.user.statusSignUp === 'Complete Step 1') {
@@ -100,6 +109,9 @@ const SignInScreen = () => {
                 <View style={{ paddingVertical: 7, borderRadius: 10, width: 300, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF6E6E' }}>
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Sign In</Text>
                 </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginTop: 15 }} onPress={() => navigation.navigate('ForgetPhone')}>
+                <Text style={{ fontFamily: 'Poppins', fontSize: 16, textAlign: 'center', color: 'white' }}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={{ marginTop: 15 }}>
                 <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Poppins' }}>Or</Text>

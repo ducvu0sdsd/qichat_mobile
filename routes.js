@@ -10,9 +10,8 @@ import SearchScreen from './screens/SearchScreen';
 import AddingScreen from './screens/addingScreen';
 import VerificationScreens from './screens/verificationScreens';
 import InformationScreens from './screens/informationScreen';
-import AuthContext from './context/authContext';
-import { useRoute } from '@react-navigation/native';
 import InformationUserScreen from './screens/informationUserScreen';
+import ForgetPhoneScreen from './screens/forgetPhoneScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -62,6 +61,10 @@ const Routes = () => {
         {
             name: 'EditingProfile',
             component: InformationUserScreen
+        },
+        {
+            name: 'ForgetPhone',
+            component: ForgetPhoneScreen
         }
     ]
 

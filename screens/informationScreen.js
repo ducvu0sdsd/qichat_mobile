@@ -36,6 +36,23 @@ const InformationScreens = () => {
     }, [])
 
     const handleSubmit = () => {
+        if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$/.test(fullName)) {
+            // handler.notify(notifyType.WARNING, 'Invalid Full Name');
+            console.log("Invalid full name")
+            return;
+        }
+
+        if (gender !== 'Male' && gender !== 'Female') {
+            // handler.notify(notifyType.WARNING, 'Invalid Gender');
+            console.log("Please Choose Gender")
+            return;
+        }
+
+        // if (!dateOfBirth || new Date().getFullYear() - new Date(dateOfBirth).getFullYear() - (new Date().getMonth() < new Date(dateOfBirth).getMonth() || (new Date().getMonth() === new Date(dateOfBirth).getMonth() && new Date().getDate() < new Date(dateOfBirth).getDate())) < 12) {
+        //     // handler.notify(notifyType.WARNING, 'Age must be at least 12');
+        //     console.log("Age must be at least 12")
+        //     return;
+        // }
 
         api({ type: TypeHTTP.PUT, body: { fullName, dateOfBirth, bio, gender, statusSignUp: 'Complete Sign Up' }, path: `/users/${data.user?._id}`, sendToken: false })
             .then(res => {
@@ -97,7 +114,7 @@ const InformationScreens = () => {
             <Image
                 style={{ width: 300, height: 230 }}
                 source={banner} />
-            <Text style={{ color: 'white', fontSize: 20, paddingHorizontal: 30, textAlign: 'center', marginVertical: 10 }}>{`We sent you an authentication code using your phone number ()`}</Text>
+            <Text style={{ color: 'white', fontSize: 20, paddingHorizontal: 30, textAlign: 'center', marginVertical: 10 }}>{`Complete Your Profile`}</Text>
             <TextInput
                 onChangeText={e => setFullName(e)}
                 style={{ marginTop: 20, paddingHorizontal: 15, fontSize: 16, backgroundColor: 'white', borderRadius: 10, width: 300, borderColor: 'white', height: 45, borderWidth: 2 }}
