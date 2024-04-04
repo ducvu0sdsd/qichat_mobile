@@ -22,10 +22,7 @@ export const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)
 }
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app)
+export const auth = getAuth()
 
 const provider = new GoogleAuthProvider()
 export const signWithGoogle = (type) => new Promise((rejects, resolve) => {
