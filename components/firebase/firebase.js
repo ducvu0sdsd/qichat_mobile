@@ -5,10 +5,6 @@ import { TypeHTTP, api } from "../../utils/api";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-GoogleSignin.configure({
-    webClientId: '',
-})
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,37 +25,30 @@ if (!firebase.apps.length) {
 export const auth = getAuth()
 
 const provider = new GoogleAuthProvider()
-export const signWithGoogle = (type) => new Promise(async (rejects, resolve) => {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    const { idToken } = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    auth().signInWithCredential(googleCredential)
-        .then(res => {
-            console.log(res)
+export const signWithGoogle = (type) => new Promise((rejects, resolve) => {
+    signInWithPopup(auth, provider)
+        .then(result => {
+            const { email, photoURL } = result.user
+            if (type === 'sign-up') {
+                api({ body: { email, avatar: photoURL }, path: '/sign-up-with-google', type: TypeHTTP.POST, sendToken: false })
+                    .then(user => {
+                        rejects(user)
+                    })
+                    .catch(error => {
+                        resolve(error)
+                    })
+            } else if (type === 'sign-in') {
+                api({ body: { email }, path: '/sign-in-with-google', type: TypeHTTP.POST, sendToken: false })
+                    .then(user => {
+                        rejects(user)
+                    })
+                    .catch(error => {
+                        resolve(error)
+                    })
+                console.log(email, photoURL)
+            }
         })
-    // signInWithPopup(auth, provider)
-    //     .then(result => {
-    //         const { email, photoURL } = result.user
-    //         if (type === 'sign-up') {
-    //             api({ body: { email, avatar: photoURL }, path: '/sign-up-with-google', type: TypeHTTP.POST, sendToken: false })
-    //                 .then(user => {
-    //                     rejects(user)
-    //                 })
-    //                 .catch(error => {
-    //                     resolve(error)
-    //                 })
-    //         } else if (type === 'sign-in') {
-    //             api({ body: { email }, path: '/sign-in-with-google', type: TypeHTTP.POST, sendToken: false })
-    //                 .then(user => {
-    //                     rejects(user)
-    //                 })
-    //                 .catch(error => {
-    //                     resolve(error)
-    //                 })
-    //             console.log(email, photoURL)
-    //         }
-    //     })
-    //     .catch(error => {
-    //         resolve(error)
-    //     })
+        .catch(error => {
+            resolve(error)
+        })
 })
