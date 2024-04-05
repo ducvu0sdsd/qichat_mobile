@@ -62,7 +62,7 @@ const InformationScreens = () => {
                             await AsyncStorage.setItem('accessToken', tokens.accessToken)
                             await AsyncStorage.setItem('refreshToken', tokens.refreshToken)
                             await AsyncStorage.setItem('user_id', res?._id)
-                            await AsyncStorage.setItem('admin', res?.admin)
+                            await AsyncStorage.setItem('admin', res?.admin + "")
                             handler.setUser(res)
                             navigation.navigate('MessageScreen')
                         })

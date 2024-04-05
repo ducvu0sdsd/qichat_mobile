@@ -20,7 +20,7 @@ const UserMessage = ({ room }) => {
             <View style={{ flexDirection: 'column', marginLeft: 10, paddingTop: 10 }}>
                 <Text style={{ fontSize: 17, fontWeight: '600' }} >{returnName(room, data.user)}</Text>
                 <Text style={{ fontSize: 14 }} >{
-                    room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ')[room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ').length - 1]
+                    room.users.filter(user => user._id === room.lastMessage.user_id)[0]?.fullName.split(' ')[room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ').length - 1]
                 }: {room.lastMessage.information}</Text>
             </View>
             <Text style={{ position: 'absolute', right: 0, top: 7, fontSize: 11, fontWeight: 700 }}>{formatTime(room.lastMessage.time)}</Text>
