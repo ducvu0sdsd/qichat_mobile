@@ -12,8 +12,10 @@ import Spinner from '../components/spinner';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import maleIcon from '../assets/male.png'
 import femaleIcon from '../assets/female.png'
-import { TypeHTTP, api } from '../utils/api';
+import { TypeHTTP, api, baseURL } from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
+import { base64ToArrayBuffer } from '../utils/media';
 
 
 const InformationUserScreen = () => {
@@ -21,6 +23,7 @@ const InformationUserScreen = () => {
     const { data, handler } = useContext(globalContext)
     const navigation = useNavigation();
     const [imageUri, setImageUri] = useState(data.user?.avatar);
+    const [image, setImage] = useState()
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
@@ -46,34 +49,52 @@ const InformationUserScreen = () => {
             setUser({ ...user, dateOfBirth: dateOfBirth })
     }, [dateOfBirth])
 
-    const openGallery = () => {
-        const options = {
-            mediaType: 'photo',
-            quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-            const source = { uri: response.assets[0].uri };
-            setImageUri(source.uri);
-            setUser({ ...user, avatar: source.uri })
-        });
+    const openGallery = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+                base64: true, // Chỉ định để nhận dữ liệu ảnh dưới dạng base64
+            });
+
+            if (!result.cancelled) {
+                setImage(result.assets[0])
+                setImageUri(result.assets[0].uri)
+            }
+        } catch (error) {
+            console.error('Lỗi khi mở thư viện ảnh:', error);
+        }
     };
 
 
     const handleSubmitInformation = () => {
-        if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$/.test(user?.fullName)) {
-            return;
+        try {
+            if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$/.test(user?.fullName)) {
+                return;
+            }
+
+            if (!user?.dateOfBirth || new Date().getFullYear() - new Date(user?.dateOfBirth).getFullYear() - (new Date().getMonth() < new Date(user?.dateOfBirth).getMonth() || (new Date().getMonth() === new Date(user?.dateOfBirth).getMonth() && new Date().getDate() < new Date(user?.dateOfBirth).getDate())) < 12) {
+                return;
+            }
+
+            const formData = new FormData()
+            formData.append("user", JSON.stringify(user))
+            if (imageUri !== user.avatar) {
+                formData.append("image", JSON.stringify(image))
+            }
+            handler.showAlert("Success", "Success")
+            api({ type: TypeHTTP.PUT, path: `/users/update-information/${user._id}`, sendToken: true, body: formData })
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        } catch (error) {
+            console.log(error)
         }
-
-        // if (!user?.dateOfBirth || new Date().getFullYear() - new Date(user?.dateOfBirth).getFullYear() - (new Date().getMonth() < new Date(user?.dateOfBirth).getMonth() || (new Date().getMonth() === new Date(user?.dateOfBirth).getMonth() && new Date().getDate() < new Date(user?.dateOfBirth).getDate())) < 12) {
-        //     return;
-        // }
-
-        const formData = new FormData()
-        formData.append("user", JSON.stringify(user))
-        api({ type: TypeHTTP.PUT, path: `/users/update-information/${user._id}`, sendToken: true, body: formData })
-            .then(res => {
-                console.log(res)
-            })
     }
 
     const handleSubmitPassword = () => {

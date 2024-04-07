@@ -7,6 +7,7 @@ import message from '../assets/icon-message.png'
 import { globalContext } from '../context/globalContext'
 import { TypeHTTP, api } from '../utils/api'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { messageContext } from '../context/messageContext'
 
 export const options = {
     CHATS: 'a',
@@ -17,8 +18,8 @@ export const options = {
 const MessageScreen = () => {
     const navigation = useNavigation()
     const [currentOption, setCurrentOption] = useState(options.CHATS)
-    const [rooms, setRooms] = useState([])
     const { data, handler } = useContext(globalContext)
+    const { messageHandler, messageData } = useContext(messageContext)
 
     const route = useRoute()
     useEffect(() => {
@@ -31,7 +32,9 @@ const MessageScreen = () => {
 
     useEffect(() => {
         api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
-            .then(rooms => setRooms(rooms))
+            .then(rooms => {
+                messageHandler.setRooms(rooms)
+            })
     }, [])
 
     const returnOption = () => {
@@ -70,7 +73,7 @@ const MessageScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 15, marginHorizontal: 5 }}>
-                    {rooms.map((room, index) => {
+                    {messageData.rooms.map((room, index) => {
                         return <UserMessage key={index} room={room} />
                     })}
                 </ScrollView>

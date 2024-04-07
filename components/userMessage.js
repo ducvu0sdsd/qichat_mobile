@@ -15,15 +15,15 @@ const UserMessage = ({ room }) => {
         <TouchableOpacity onPress={() => {
             messageHandler.setCurrentRoom(room);
             navigation.navigate('ChatScreen')
-        }} style={{ flexDirection: 'row', position: 'relative', alignItems: 'center', marginVertical: 2 }}>
+        }} style={{ flexDirection: 'row', position: 'relative', alignItems: 'center', marginVertical: 4 }}>
             <UserIcon avatar={returnImage(room, data.user)} />
-            <View style={{ flexDirection: 'column', marginLeft: 10, paddingTop: 10 }}>
+            <View style={{ flexDirection: 'column', marginLeft: 10, }}>
                 <Text style={{ fontSize: 17, fontWeight: '600' }} >{returnName(room, data.user)}</Text>
                 <Text style={{ fontSize: 14 }} >{
-                    room.users.filter(user => user._id === room.lastMessage.user_id)[0]?.fullName.split(' ')[room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ').length - 1]
-                }: {room.lastMessage.information}</Text>
+                    room.users.filter(user => user._id === room.lastMessage.user_id)[0]?.fullName.split(' ')[room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ').length - 1] !== undefined && room.users.filter(user => user._id === room.lastMessage.user_id)[0]?.fullName.split(' ')[room.users.filter(user => user._id === room.lastMessage.user_id)[0].fullName.split(' ').length - 1] + ": "
+                }{room.lastMessage.information}</Text>
             </View>
-            <Text style={{ position: 'absolute', right: 0, top: 7, fontSize: 11, fontWeight: 700 }}>{formatTime(room.lastMessage.time)}</Text>
+            <Text style={{ position: 'absolute', right: 0, top: 10, fontSize: 11, fontWeight: 600 }}>{formatTime(room.lastMessage.time)}</Text>
         </TouchableOpacity>
     )
 }

@@ -2,23 +2,29 @@ import React, { useContext, useEffect, useState } from 'react'
 import { createContext } from "react";
 import { globalContext } from './globalContext';
 import { TypeHTTP, api } from '../utils/api';
+import { useRoute } from '@react-navigation/native';
 
 export const messageContext = createContext()
 
 const MessageContext = ({ children }) => {
-
     const [currentRoom, setCurrentRoom] = useState()
     const [messages, setMessages] = useState([])
+    const [reply, setReply] = useState()
+    const [rooms, setRooms] = useState([])
     const { data } = useContext(globalContext)
 
     const messageData = {
         currentRoom,
-        messages
+        messages,
+        reply,
+        rooms
     }
 
     const messageHandler = {
         setCurrentRoom,
-        setMessages
+        setMessages,
+        setReply,
+        setRooms
     }
 
     useEffect(() => {
