@@ -14,6 +14,7 @@ import * as FilePicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { io } from 'socket.io-client';
 import { TypeHTTP, api, baseURL } from '../utils/api';
+import Recorder from '../components/recorder';
 const socket = io.connect(baseURL)
 
 const types = {
@@ -27,8 +28,8 @@ const ChatScreen = () => {
     const { messageData, messageHandler } = useContext(messageContext)
     const { data, handler } = useContext(globalContext)
     const [files, setFiles] = useState([])
-    const [typeInput, setTypeInput] = useState(types.TEXT)
     const navigation = useNavigation();
+    const [recording, setRecording] = useState(false)
 
     const route = useRoute()
     useEffect(() => {
@@ -40,10 +41,11 @@ const ChatScreen = () => {
     }, [])
 
     useEffect(() => {
-        if (files.length === 0)
-            setTypeInput(types.TEXT)
-        else
-            setTypeInput(types.FILE)
+        if (files.length > 0) {
+            if (!files.map(item => item.type).includes('mp3.')) {
+                sendMessage()
+            }
+        }
     }, [files.length])
 
     useEffect(() => {
@@ -65,7 +67,7 @@ const ChatScreen = () => {
 
 
     const sendMessage = () => {
-        if (typeInput === types.TEXT) {
+        if (files.length === 0) {
             if (information.trim() !== '') {
                 const body = {
                     room_id: messageData.currentRoom._id,
@@ -175,26 +177,14 @@ const ChatScreen = () => {
                         <MessageSection disabled={message.disabled} key={index} avatar={message.user.avatar} style={'flex-start'} information={message.information} />
                 })}
             </ScrollView>
-            {typeInput === types.TEXT ?
-                <View style={{ marginBottom: 15, marginTop: 5, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon name='microphone-outline' style={{ position: 'absolute', left: 15, top: 10, zIndex: 1, color: '#999', fontSize: 26, marginRight: 5 }} />
-                    <TextInput onChangeText={e => setInformation(e)} value={information} placeholder='Type your message...' style={{ paddingLeft: 40, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25 }} />
-                    <View style={{ position: 'absolute', top: 10, right: 10, flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={pickFile}>
-                            <Icon name='attachment' style={{ zIndex: 1, color: '#999', fontSize: 26, marginRight: 5, }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => sendMessage()}>
-                            <Icon name='send' style={{ zIndex: 1, color: '#999', fontSize: 26, marginRight: 5 }} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            {recording === true ?
+                <Recorder />
                 :
                 <View style={{ marginBottom: 15, marginTop: 5, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ paddingLeft: 15, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25, flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                        {files.map((file, index) => {
-                            return <Image source={{ uri: file.uri }} key={index} style={{ height: "80%", aspectRatio: 1, borderRadius: 10 }} />
-                        })}
-                    </View>
+                    <TouchableOpacity onPress={() => setRecording(true)} style={{ position: 'absolute', left: 15, top: 10, zIndex: 1, marginRight: 5 }}>
+                        <Icon name='microphone-outline' style={{ color: '#999', fontSize: 26 }} />
+                    </TouchableOpacity>
+                    <TextInput onChangeText={e => setInformation(e)} value={information} placeholder='Type your message...' style={{ paddingLeft: 40, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25 }} />
                     <View style={{ position: 'absolute', top: 10, right: 10, flexDirection: 'row' }}>
                         <TouchableOpacity onPress={pickFile}>
                             <Icon name='attachment' style={{ zIndex: 1, color: '#999', fontSize: 26, marginRight: 5, }} />

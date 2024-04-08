@@ -63,11 +63,11 @@ const MessageSection = ({ style, information, avatar, disabled }) => {
                                     return <AudioPlayer key={index} url={item.url} style={{}} />
                                 } else {
                                     const type = item.url.split('___')[0].split('/')[item.url.split('___')[0].split('/').length - 1]
-                                    return <TouchableOpacity key={index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between", gap: 5, padding: 10 }}>
+                                    return <TouchableOpacity key={index} style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 10, width: '100%' }}>
                                         <Image source={fileTypes[type]} style={{ width: 50, aspectRatio: 1 }} />
-                                        <View style={{ flexDirection: 'column' }}>
-                                            <Text style={{ lineHeight: 22, fontSize: 11, fontWeight: 'bold' }}>{`${item.name}.${type}`}</Text>
-                                            <Text style={{ lineHeight: 22, fontSize: 9, fontWeight: '600' }}>{`${item.size >= 1024 ? `${(item.size / 1024).toFixed(2)} MB` : `${item.size} KB`}`}</Text>
+                                        <View style={{ flexDirection: 'column', width: 300, gap: 1 }}>
+                                            <Text style={{ lineHeight: 18, fontSize: 13, fontWeight: '700' }}>{`${item.name}.${type}`.length >= 13 ? `${item.name}.${type}`.substring(0, 13) + "..." : `${item.name}.${type}`}</Text>
+                                            <Text style={{ fontSize: 10, fontWeight: '600' }}>{`${item.size >= 1024 ? `${(item.size / 1024).toFixed(2)} MB` : `${item.size} KB`}`}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 }
