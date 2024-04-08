@@ -42,7 +42,7 @@ const ChatScreen = () => {
 
     useEffect(() => {
         if (files.length > 0) {
-            if (!files.map(item => item.type).includes('mp3.')) {
+            if (!files.map(item => item.mimetype).includes('mp3')) {
                 sendMessage()
             }
         }
@@ -178,7 +178,7 @@ const ChatScreen = () => {
                 })}
             </ScrollView>
             {recording === true ?
-                <Recorder />
+                <Recorder sendMessage={sendMessage} setFiles={setFiles} />
                 :
                 <View style={{ marginBottom: 15, marginTop: 5, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <TouchableOpacity onPress={() => setRecording(true)} style={{ position: 'absolute', left: 15, top: 10, zIndex: 1, marginRight: 5 }}>
