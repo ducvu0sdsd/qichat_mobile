@@ -12,6 +12,7 @@ import VerificationScreens from './screens/verificationScreens';
 import InformationScreens from './screens/informationScreen';
 import InformationUserScreen from './screens/informationUserScreen';
 import ForgetPhoneScreen from './screens/forgetPhoneScreen';
+import UserProfileScreen from './screens/userProfileScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -65,6 +66,10 @@ const Routes = () => {
         {
             name: 'ForgetPhone',
             component: ForgetPhoneScreen
+        },
+        {
+            name: 'UserProfile',
+            component: UserProfileScreen
         }
     ]
 

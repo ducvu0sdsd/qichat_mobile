@@ -1,7 +1,9 @@
-import React, { createContext, useState } from 'react'
-import { TypeHTTP, api } from '../utils/api';
+import React, { createContext, useEffect, useState } from 'react'
+import { TypeHTTP, api, baseURL } from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
+import { Alert, AppState } from 'react-native';
+import { io } from 'socket.io-client'
+const socket = io.connect(baseURL)
 
 export const globalContext = createContext()
 
@@ -27,6 +29,24 @@ const GlobalContext = ({ children }) => {
         );
     };
 
+    useEffect(() => {
+        const handleAppStateChange = (nextAppState) => {
+            if (nextAppState === 'background') {
+                console.log('Ứng dụng đã ở chế độ nền');
+                // Do something when the app goes to background
+            } else if (nextAppState === 'active') {
+                console.log('Ứng dụng đã được mở lại');
+                // Do something when the app becomes active again
+            }
+        };
+
+        AppState.addEventListener('change', handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', handleAppStateChange);
+        };
+    }, []);
+
     const checkToken = (pathname) => new Promise(async (resolve, reject) => {
         const publics = ['SignInScreen', 'SignUpScreen', 'VerificationScreen', 'InformationScreen', 'PublicScreen']
         const accessToken = await AsyncStorage.getItem('accessToken')
@@ -49,7 +69,7 @@ const GlobalContext = ({ children }) => {
                         .then(res => {
                             const friends_id = res.friends.map(item => item._id)
                             friends_id.push(res._id)
-                            // Socket.emit('update-room', friends_id)
+                            socket.emit('update-room', friends_id)
                             resolve(null)
                         })
                 })

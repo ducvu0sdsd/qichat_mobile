@@ -9,7 +9,6 @@ import { messageContext } from '../context/messageContext';
 import { globalContext } from '../context/globalContext';
 import { returnID, returnImage, returnName, returnRemainingObject } from '../utils/room';
 import { tinhSoPhutCham } from '../utils/time';
-import * as ImagePicker from 'expo-image-picker';
 import * as FilePicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { io } from 'socket.io-client';
@@ -117,7 +116,6 @@ const ChatScreen = () => {
             // type
         })
         if (!result.canceled) {
-            console.log(result.assets[0])
             const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
                 encoding: FileSystem.EncodingType.Base64,
             });

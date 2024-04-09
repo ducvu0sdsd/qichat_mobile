@@ -41,14 +41,20 @@ const AudioPlayer = ({ url, style }) => {
         <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center', paddingVertical: 5 }}>
             {playing ?
                 <TouchableOpacity onPress={() => pause()} style={{}}>
-                    <Icon name='pause-circle-outline' style={{ color: '#999', fontSize: 40 }} />
+                    <Icon name='pause' style={{ color: '#999', fontSize: 35 }} />
                 </TouchableOpacity>
                 :
                 <TouchableOpacity onPress={() => play()} style={{}}>
-                    <Icon name='play-circle-outline' style={{ color: '#999', fontSize: 40 }} />
+                    <Icon name='play' style={{ color: '#999', fontSize: 35 }} />
                 </TouchableOpacity>
             }
-            <Text style={{ fontWeight: 600 }}>Voice messages</Text>
+            <View style={{ flexDirection: 'row' }}>
+                <Icon name='equalizer' style={{ color: 'rgba(153, 153, 153, 0.6)', fontSize: 28, marginRight: -6 }} />
+                <Icon name='equalizer' style={{ color: 'rgba(153, 153, 153, 0.6)', fontSize: 28, marginRight: -6 }} />
+                <Icon name='equalizer' style={{ color: 'rgba(153, 153, 153, 0.6)', fontSize: 28, marginRight: -6 }} />
+                <Icon name='equalizer' style={{ color: 'rgba(153, 153, 153, 0.6)', fontSize: 28 }} />
+            </View>
+
         </View>
     )
 }

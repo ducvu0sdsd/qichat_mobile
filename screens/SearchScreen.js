@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import avatar from '../assets/avatar.jpg'
 import bg from '../assets/bg.webp'
 import Icon from 'react-native-vector-icons/Feather';
 import Menu from '../components/menu'
 import logo from '../assets/friends.png'
 import logo1 from '../assets/groups.png'
-import UserSearchGroup from '../components/userSearchGroup';
 import { globalContext } from '../context/globalContext'
-import UserSearch from '../components/userSearch';
-import friends from '../assets/icon-friends.png'
+import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native';
+import UserIcon from '../components/userIcon';
+import { TypeHTTP, api } from '../utils/api';
 
 const options = {
     FRIEND: 'a',
@@ -21,6 +20,31 @@ const SearchScreen = () => {
 
     const { data, handler } = useContext(globalContext)
     const [currentOption, setCurrentOption] = useState(options.FRIEND)
+    const [friends, setFriends] = useState([])
+    const [groups, setGroups] = useState([])
+    const [nameFilter, setNameFilter] = useState('')
+    const navigation = useNavigation()
+    const navigateToProfile = (user) => {
+        navigation.navigate('UserProfile', { user: user });
+    };
+
+    useEffect(() => {
+        if (data.user)
+            setFriends(data.user.friends)
+    }, [data.user])
+    useEffect(() => {
+        api({ type: TypeHTTP.GET, path: `/groups/${data.user?._id}`, sendToken: true })
+            .then(rooms => {
+                setGroups(rooms)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }, [])
+
+
+
+
     const returnOption = () => {
         if (currentOption === options.FRIEND)
             return 'flex-start'
@@ -36,6 +60,9 @@ const SearchScreen = () => {
                     navigation.navigate(goal)
             })
     }, [])
+
+
+
 
     return (
         <View style={{ backgroundColor: 'white', height: '100%' }}>
@@ -63,32 +90,43 @@ const SearchScreen = () => {
                 </View>
                 <View style={{ borderWidth: 1, borderColor: '#999', borderRadius: 25, marginTop: 20, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon name='search' style={{ position: 'absolute', left: 15, zIndex: 1, color: '#999', fontSize: 26, marginRight: 5 }} />
-                    <TextInput placeholder='Type your message...' style={{ paddingLeft: 40, paddingRight: 40, fontSize: 15, height: 50, width: '98%', borderRadius: 25 }} />
+                    <TextInput onChangeText={text => setNameFilter(text)} value={nameFilter} placeholder='Type your message...' style={{ paddingLeft: 40, paddingRight: 40, fontSize: 15, height: 50, width: '98%', borderRadius: 25 }} />
                 </View>
                 {currentOption === options.FRIEND ?
-                    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 20, marginHorizontal: 5 }}>
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
-                        <UserSearch />
+                    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 20, marginHorizontal: 5, paddingBottom: 20, flexDirection: 'row' }}>
+                        <View style={{ marginVertical: 2 }}>
+
+                            <View style={{ flexDirection: 'column', gap: 10 }}>
+                                {friends.map((friend, index) => {
+                                    if (nameFilter === '' || friend.fullName.toLowerCase().includes(nameFilter.toLowerCase()))
+                                        return <TouchableOpacity onPress={() => navigateToProfile(friend)} style={{ fontSize: 18, alignItems: 'center', flexDirection: 'row', gap: 10 }} key={index} >
+                                            <UserIcon style={{}} avatar={friend.avatar} />
+                                            <Text style={{ fontWeight: 700 }}>{friend.fullName}</Text>
+                                        </TouchableOpacity>
+                                })
+                                }
+
+                            </View>
+
+                        </View>
                     </ScrollView>
                     :
                     <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 20, marginHorizontal: 5 }}>
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
-                        <UserSearchGroup />
+                        <View style={{ flexDirection: 'column', gap: 10, alignItems: 'center', marginVertical: 2, flexDirection: 'column', width: '100%' }}>
+                            {groups.map((group, index) => {
+                                if (nameFilter === '' || group.name.toLowerCase().includes(nameFilter.toLowerCase()))
+                                    return <TouchableOpacity onClick={() => handleUserProfile(friend_id)} key={index} style={{ width: '100%', fontSize: 18, alignItems: 'center', flexDirection: 'row', gap: 10, justifyContent: 'space-between' }} >
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                            <UserIcon style={{}} type={'Group'} avatar={group.image} />
+                                            <Text style={{ fontWeight: 650 }} >{group.name}</Text>
+                                        </View>
+                                        <Text style={{ fontWeight: 650 }}>
+                                            {`${group.users.length} participants`}
+                                        </Text>
+                                    </TouchableOpacity>
+                            })}
+
+                        </View >
                     </ScrollView>
                 }
             </View >

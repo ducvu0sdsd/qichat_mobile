@@ -63,16 +63,24 @@ const Recorder = ({ sendMessage, setFiles }) => {
                     <Icon name='play' style={{ color: '#999', fontSize: 30, top: -3 }} />
                 </TouchableOpacity>
             }
-            <View style={{ paddingLeft: 45, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25 }}>
+            <View style={{ paddingLeft: 45, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25, justifyContent: 'center' }}>
                 <Text>
                     {playing === true ? "Recording" : "Recorded"}
                 </Text>
             </View>
-            <View style={{ position: 'absolute', top: 10, right: 10, flexDirection: 'row' }}>
-                <TouchableOpacity onPress={() => sendMessage()}>
-                    <Icon name='send' style={{ zIndex: 1, color: '#999', fontSize: 26, marginRight: 5 }} />
-                </TouchableOpacity>
-            </View>
+            {playing === false && (
+                <View style={{ position: 'absolute', top: 10, right: 10, flexDirection: 'row' }}>
+                    <TouchableOpacity onPress={() => sendMessage()}>
+                        <Icon name='reload' style={{ color: '#999', fontSize: 26, marginRight: 5 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity >
+                        <Icon name='close' style={{ color: '#999', fontSize: 26, marginRight: 5 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity >
+                        <Icon name='send' style={{ color: '#999', fontSize: 26, marginRight: 5 }} />
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     )
 }
