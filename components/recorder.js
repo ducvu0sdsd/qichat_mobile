@@ -32,7 +32,6 @@ const Recorder = ({ sendMessage, setFiles }) => {
         const { sound, status } = await recording.createNewLoadedSoundAsync();
         setSound(sound.getURI)
         sound.replayAsync()
-        console.log(sound)
         const base64 = await FileSystem.readAsStringAsync(recording.getURI(), {
             encoding: FileSystem.EncodingType.Base64,
         });

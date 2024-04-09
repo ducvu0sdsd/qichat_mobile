@@ -42,7 +42,7 @@ const ChatScreen = () => {
 
     useEffect(() => {
         if (files.length > 0) {
-            if (!files.map(item => item.mimetype).includes('mp3')) {
+            if (!files.map(item => item.mimetype)[0].includes('mp3')) {
                 sendMessage()
             }
         }
@@ -60,9 +60,11 @@ const ChatScreen = () => {
     }, [socket, messageData.currentRoom])
 
     useEffect(() => {
-        setTimeout(() => {
-            messageRef.current.scrollToEnd({ animated: true });
-        }, 500);
+        if (messageRef.current) {
+            setTimeout(() => {
+                messageRef.current.scrollToEnd({ animated: true });
+            }, 500);
+        }
     }, [messageData.messages?.length])
 
 
