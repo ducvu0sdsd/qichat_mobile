@@ -70,7 +70,7 @@ const AddingScreen = () => {
                         <FriendsRequestLayout />
                 }
             </View>
-            <Menu />
+            {currentOption !== options.CREATE_GROUP && <Menu />}
         </View>
     )
 }

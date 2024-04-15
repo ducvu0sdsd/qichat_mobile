@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Image, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native'
+import { Image, Pressable, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native'
 import { View } from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserIcon from '../components/userIcon';
@@ -28,7 +28,9 @@ const ChatScreen = () => {
     const { data, handler } = useContext(globalContext)
     const [files, setFiles] = useState([])
     const navigation = useNavigation();
-    const [recording, setRecording] = useState(false)
+    const [record, setRecord] = useState(false)
+    const [displayEmoji, setDisplayEmoji] = useState('')
+
 
     const route = useRoute()
     useEffect(() => {
@@ -59,10 +61,14 @@ const ChatScreen = () => {
     }, [socket, messageData.currentRoom])
 
     useEffect(() => {
-        if (messageRef.current) {
-            setTimeout(() => {
-                messageRef.current.scrollToEnd({ animated: true });
-            }, 500);
+        try {
+            if (messageRef.current) {
+                setTimeout(() => {
+                    messageRef.current.scrollToEnd({ animated: true });
+                }, 500);
+            }
+        } catch (error) {
+
         }
     }, [messageData.messages?.length])
 
@@ -90,16 +96,20 @@ const ChatScreen = () => {
             try {
                 const body = {
                     room_id: messageData.currentRoom._id,
-                    reply: null,
+                    reply: {
+                        _id: messageData.reply ? messageData.reply?._id : null,
+                        information: messageData.reply ? messageData.reply?.information : null
+                    },
                     information: files,
                     typeMessage: 'file',
                     user_id: data.user._id,
                     users: messageData.currentRoom?.users.map(item => item._id)
                 }
+                const load = { ...body, typeMessage: 'loading' }
+                messageHandler.setMessages([...messageData.messages, load])
                 api({ body: body, path: '/messages-mobile', type: TypeHTTP.POST, sendToken: true })
                     .then(res => {
                         socket.emit('update-message', { room_id: messageData.currentRoom._id, information: files.length, user_id: data.user?._id, users: messageData.currentRoom?.users.map(item => item._id), _id: res._id })
-                        setFiles([])
                         setInformation('')
                         messageHandler.setReply(undefined)
                     })
@@ -107,6 +117,8 @@ const ChatScreen = () => {
                 console.log(error)
             }
         }
+        setFiles([])
+        setRecord(false)
     }
 
     const pickFile = async () => {
@@ -137,7 +149,7 @@ const ChatScreen = () => {
     }
 
     return (
-        <View style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>
+        <Pressable onPress={() => setDisplayEmoji('')} style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>
             <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: '8%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => handleBackScreen()}>
@@ -147,7 +159,7 @@ const ChatScreen = () => {
                     <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontSize: 16, fontWeight: 600 }}>{returnName(messageData.currentRoom, data.user)}</Text>
                         <Text style={{ fontSize: 13, marginLeft: 3 }}>
-                            {messageData.currentRoom.type === 'Single' ?
+                            {messageData.currentRoom?.type === 'Single' ?
                                 data.user.friends.map(user => user._id).includes(returnID(messageData.currentRoom, data.user)) ?
                                     returnRemainingObject(messageData.currentRoom, data.user).operating.status === true ?
                                         "Online"
@@ -156,7 +168,7 @@ const ChatScreen = () => {
                                     :
                                     "Stranger"
                                 :
-                                `${messageData.currentRoom.users.length} Participants`
+                                `${messageData.currentRoom?.users.length} Participants`
                             }
                         </Text>
                     </View>
@@ -172,16 +184,24 @@ const ChatScreen = () => {
             <ScrollView ref={messageRef} showsVerticalScrollIndicator={false} style={{ height: '80%', }}>
                 {messageData.messages.map((message, index) => {
                     return message.user_id === data.user._id ?
-                        <MessageSection disabled={message.disabled} key={index} style={'flex-end'} information={message.information} />
+                        <MessageSection id={message._id} message={message} displayEmoji={displayEmoji} setDisplayEmoji={setDisplayEmoji} disabled={message.disabled} key={index} style={'flex-end'} information={message.information} />
                         :
-                        <MessageSection disabled={message.disabled} key={index} avatar={message.user.avatar} style={'flex-start'} information={message.information} />
+                        <MessageSection id={message._id} message={message} displayEmoji={displayEmoji} setDisplayEmoji={setDisplayEmoji} disabled={message.disabled} key={index} avatar={message.user?.avatar} style={'flex-start'} information={message.information} />
                 })}
             </ScrollView>
-            {recording === true ?
-                <Recorder sendMessage={sendMessage} setFiles={setFiles} />
+            {record === true ?
+                <View style={{ marginTop: 5, zIndex: 1, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    {messageData.reply && <View style={{ position: 'absolute', flexDirection: 'row', zIndex: -1, alignItems: 'center', paddingHorizontal: 20, height: 30, backgroundColor: '#F4F4F4', top: -30, left: 0, borderRadius: 25 }}>
+                        <Text>Reply: {messageData.reply.information}</Text>
+                    </View>}
+                    <Recorder files={files} sendMessage={sendMessage} setFiles={setFiles} setRecord={setRecord} />
+                </View>
                 :
-                <View style={{ marginBottom: 15, marginTop: 5, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity onPress={() => setRecording(true)} style={{ position: 'absolute', left: 15, top: 10, zIndex: 1, marginRight: 5 }}>
+                <View style={{ marginBottom: 15, marginTop: 5, zIndex: 1, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    {messageData.reply && <View style={{ position: 'absolute', flexDirection: 'row', zIndex: -1, alignItems: 'center', paddingHorizontal: 20, height: 30, backgroundColor: '#F4F4F4', top: -30, left: 0, borderRadius: 25 }}>
+                        <Text>Reply: {messageData.reply.information}</Text>
+                    </View>}
+                    <TouchableOpacity onPress={() => setRecord(true)} style={{ position: 'absolute', left: 15, top: 10, zIndex: 1, marginRight: 5 }}>
                         <Icon name='microphone-outline' style={{ color: '#999', fontSize: 26 }} />
                     </TouchableOpacity>
                     <TextInput onChangeText={e => setInformation(e)} value={information} placeholder='Type your message...' style={{ paddingLeft: 40, paddingRight: 73, fontSize: 15, height: 45, width: '98%', backgroundColor: '#F4F4F4', borderRadius: 25 }} />
@@ -195,7 +215,7 @@ const ChatScreen = () => {
                     </View>
                 </View>
             }
-        </View >
+        </Pressable >
     )
 }
 

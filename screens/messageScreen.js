@@ -5,9 +5,11 @@ import UserMessage from '../components/userMessage'
 import Menu from '../components/menu'
 import message from '../assets/icon-message.png'
 import { globalContext } from '../context/globalContext'
-import { TypeHTTP, api } from '../utils/api'
+import { TypeHTTP, api, baseURL } from '../utils/api'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { messageContext } from '../context/messageContext'
+import { io } from 'socket.io-client';
+const socket = io.connect(baseURL)
 
 export const options = {
     CHATS: 'a',
@@ -36,6 +38,20 @@ const MessageScreen = () => {
                 messageHandler.setRooms(rooms)
             })
     }, [])
+
+    useEffect(() => {
+        socket.on('update-operation-rooms', (body) => {
+            if (body.friends_id?.includes(data.user?._id)) {
+                api({ type: TypeHTTP.GET, path: `/rooms/${data.user?._id}`, sendToken: true })
+                    .then(rooms => {
+                        messageHandler.setRooms(rooms)
+                    })
+            }
+        })
+        return () => {
+            socket.off('update-operation-rooms')
+        }
+    }, [data.user?._id])
 
     const returnOption = () => {
         if (currentOption === options.CHATS)

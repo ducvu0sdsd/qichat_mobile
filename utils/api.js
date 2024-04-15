@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // export const baseURL = 'http://localhost:8080'
 export const systemID = '5f4a3e1b2c3d4e5f67890abc'
-export const baseURL = 'http://192.168.1.81:8080'
+export const baseURL = 'http://192.168.1.8:8080'
 // export const baseURL = 'https://shoeshop-backend.online'
 axios.defaults.baseURL = `${baseURL}/v1/api`
 
@@ -62,7 +62,6 @@ export const api = async ({ path, body, type, sendToken }) => {
                         }
                     })
                     .catch(res => {
-                        console.error(res)
                         resolve({ status: res.response?.status, message: res.response?.data })
                     })
                 break

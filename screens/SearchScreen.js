@@ -80,11 +80,11 @@ const SearchScreen = () => {
                     </View>
                     <TouchableOpacity onPress={() => setCurrentOption(options.FRIEND)} style={{ width: '50%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Image source={logo} style={{ width: 20, height: 35, marginRight: 5 }}></Image>
-                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, color: currentOption === options.FRIEND ? 'white' : 'black' }}>Friends</Text>
+                        <Text style={{ color: 'white', fontWeight: 700, fontSize: 16, color: currentOption === options.FRIEND ? 'white' : 'black' }}>Friends</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setCurrentOption(options.GROUP)} style={{ width: '50%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Image source={logo1} style={{ width: 35, height: 35, marginRight: 5 }}></Image>
-                        <Text style={{ fontWeight: '800', fontSize: 16, color: currentOption === options.GROUP ? 'white' : 'black' }}>Groups </Text>
+                        <Text style={{ fontWeight: 800, fontSize: 16, color: currentOption === options.GROUP ? 'white' : 'black' }}>Groups </Text>
                     </TouchableOpacity>
 
                 </View>

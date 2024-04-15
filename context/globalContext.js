@@ -32,20 +32,29 @@ const GlobalContext = ({ children }) => {
     useEffect(() => {
         const handleAppStateChange = (nextAppState) => {
             if (nextAppState === 'background') {
-                console.log('Ứng dụng đã ở chế độ nền');
-                // Do something when the app goes to background
+                socket.emit('close_operating', { _id: user?._id, operating: { status: false, time: new Date() } })
             } else if (nextAppState === 'active') {
-                console.log('Ứng dụng đã được mở lại');
-                // Do something when the app becomes active again
+                if (user?._id) {
+                    const userUpdate = user
+                    userUpdate.operating = {
+                        status: true,
+                        time: new Date()
+                    }
+                    api({ type: TypeHTTP.PUT, sendToken: false, path: `/users/${userUpdate?._id}`, body: userUpdate })
+                        .then(res => {
+                            const friends_id = res.friends.map(item => item?._id)
+                            friends_id.push(res._id)
+                            socket.emit('update-room', friends_id)
+                        })
+                }
             }
         };
-
         AppState.addEventListener('change', handleAppStateChange);
 
-        return () => {
-            AppState.removeEventListener('change', handleAppStateChange);
-        };
-    }, []);
+        // return () => {
+        //     AppState.removeEventListener('change', handleAppStateChange);
+        // };
+    }, [user]);
 
     const checkToken = (pathname) => new Promise(async (resolve, reject) => {
         const publics = ['SignInScreen', 'SignUpScreen', 'VerificationScreen', 'InformationScreen', 'PublicScreen']

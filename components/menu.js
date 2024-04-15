@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import moon from '../assets/icon-moon.png'
@@ -9,12 +9,17 @@ import logout from '../assets/icon-logout.png'
 import bg from '../assets/bg-circle.png'
 import { messageRoutes } from '../routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TypeHTTP, api } from '../utils/api';
+import { globalContext } from '../context/globalContext';
+import { messageContext } from '../context/messageContext';
 
 const Menu = () => {
 
     const route = useRoute();
     const [pathName, setPathName] = useState()
     const navigation = useNavigation();
+    const { data } = useContext(globalContext)
+    const { messageHandler } = useContext(messageContext)
     useEffect(() => {
         setPathName(route.name)
     }, [route.name])
@@ -23,6 +28,14 @@ const Menu = () => {
         await AsyncStorage.removeItem('accessToken')
         await AsyncStorage.removeItem('refreshToken')
         navigation.navigate('PublicScreen')
+    }
+
+    const handleToMessageScreen = () => {
+        api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
+            .then(rooms => {
+                messageHandler.setRooms(rooms)
+            })
+        navigation.navigate('MessageScreen')
     }
 
     return (
@@ -38,7 +51,7 @@ const Menu = () => {
                         <Image source={friends} style={{ width: 38, height: 38 }} />
                     </ImageBackground>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('MessageScreen')}>
+                <TouchableOpacity onPress={() => handleToMessageScreen()}>
                     <ImageBackground source={messageRoutes.includes(pathName) && bg} style={{ width: 50, height: 50, borderRadius: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Image source={message} style={{ width: 38, height: 38 }} />
                     </ImageBackground>

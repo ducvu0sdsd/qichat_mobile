@@ -30,15 +30,14 @@ const AddFriendLayout = () => {
     useEffect(() => setQuery(''), [currentInput])
     useEffect(debounce(() => {
         if (query !== "") {
-            if (currentInput === 'phone')
-                api({ type: TypeHTTP.GET, sendToken: true, path: `/users/find-by-${currentInput}/${currentInput === 'phone' ? formatPhoneByFireBase(query) : query}` })
-                    .then(result => {
-                        setUsers(result.filter(user => {
-                            if (user._id !== data.user._id && user.statusSignUp === "Complete Sign Up") {
-                                return user
-                            }
-                        }))
-                    })
+            api({ type: TypeHTTP.GET, sendToken: true, path: `/users/find-by-${currentInput}/${currentInput === 'phone' ? formatPhoneByFireBase(query) : query}` })
+                .then(result => {
+                    setUsers(result.filter(user => {
+                        if (user._id !== data.user._id && user.statusSignUp === "Complete Sign Up") {
+                            return user
+                        }
+                    }))
+                })
         } else
             setUsers([])
     }, 300), [query])
@@ -71,14 +70,20 @@ const AddFriendLayout = () => {
                 />
             </View>
             <View>
-                {users.map((user, index) => (
-                    <TouchableOpacity key={index} onPress={() => navigateToProfile(user)}>
-                        <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginLeft: 10 }}>
-                            <UserIcon avatar={user.avatar} />
-                            <Text style={{ fontSize: 15, fontWeight: '600', marginLeft: 10 }}>{user.fullName}</Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                {users.length > 0 ?
+                    users.map((user, index) => (
+                        <TouchableOpacity key={index} onPress={() => navigateToProfile(user)}>
+                            <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginLeft: 10 }}>
+                                <UserIcon avatar={user.avatar} />
+                                <Text style={{ fontSize: 15, fontWeight: '600', marginLeft: 10 }}>{user.fullName}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                    :
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '60%' }}>
+                        <Text style={{ fontFamily: 'Poppins', fontSize: 18 }}>Not Found</Text>
+                    </View>
+                }
             </View>
         </View>
     )

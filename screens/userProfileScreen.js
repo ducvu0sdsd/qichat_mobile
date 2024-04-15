@@ -16,16 +16,16 @@ const UserProfileScreen = () => {
     const { handler, data } = useContext(globalContext)
     const [request, setRequest] = useState()
     const navigation = useNavigation();
+    const userInfo = route.params.user
 
 
+    useEffect(() => {
+        setUser(userInfo)
+        if (userInfo)
+            api({ type: TypeHTTP.POST, sendToken: true, path: '/requests/get-by-2-user', body: { user_id1: userInfo?._id, user_id2: data.user?._id } })
+                .then(req => setRequest(req))
+    }, [userInfo])
 
-
-    // useEffect(() => {
-    //     setUser(userInfo)
-    //     if (userInfo)
-    //         api({ type: TypeHTTP.POST, sendToken: true, path: '/requests/get-by-2-user', body: { user_id1: userInfo?._id, user_id2: data.user?._id } })
-    //             .then(req => setRequest(req))
-    // }, [userInfo])
     useEffect(() => {
         if (route.params.user._id) {
             api({
@@ -40,13 +40,14 @@ const UserProfileScreen = () => {
     }, [route.params.user._id]);
 
     const goBack = () => {
+        setRequest(undefined)
         navigation.goBack();
     };
     const handleRefuseRequest = (id) => {
         api({ type: TypeHTTP.DELETE, sendToken: true, path: `/requests/${id}` })
             .then(res => {
                 setRequest(undefined)
-                handler.notify(notifyType.SUCCESS, 'Refuse Request Successfully')
+                // handler.notify(notifyType.SUCCESS, 'Refuse Request Successfully')
             })
             .catch(error => console.log(error))
     }
@@ -56,7 +57,7 @@ const UserProfileScreen = () => {
             .then(res => {
                 handler.setUser(res.user)
                 setRequest(undefined)
-                handler.notify(notifyType.SUCCESS, 'Accept Request Successfully')
+                // handler.notify(notifyType.SUCCESS, 'Accept Request Successfully')
             })
             .catch(error => console.log(error))
     }
@@ -69,6 +70,7 @@ const UserProfileScreen = () => {
         }
         api({ type: TypeHTTP.POST, body: { toUser, fromUser }, path: '/requests', sendToken: true })
             .then(result => {
+                console.log(result)
                 setRequest(result)
                 handler.notify(notifyType.SUCCESS, `Sended Request To ${user?.fullName} successfully`)
             })
@@ -88,7 +90,7 @@ const UserProfileScreen = () => {
             .then(users => {
                 setUser(users[user._id])
                 handler.setUser(users[data.user?._id])
-                handler.notify(notifyType.SUCCESS, `Successfully unfriended ${user.fullName}`)
+                // handler.notify(notifyType.SUCCESS, `Successfully unfriended ${user.fullName}`)
             })
             .catch(error => console.log(error))
     }
@@ -98,7 +100,7 @@ const UserProfileScreen = () => {
             user_block: id1,
             user_id: id2,
         }
-        handler.notify(notifyType.LOADING, `Blocking ${user.fullName}`)
+        // handler.notify(notifyType.LOADING, `Blocking ${user.fullName}`)
         api({ path: '/users/block', body: body, type: TypeHTTP.POST, sendToken: true })
             .then(user => {
                 handler.setUser(user)
@@ -112,11 +114,11 @@ const UserProfileScreen = () => {
             user_block: id1,
             user_id: id2,
         }
-        handler.notify(notifyType.LOADING, `Unblocking ${user.fullName}`)
+        // handler.notify(notifyType.LOADING, `Unblocking ${user.fullName}`)
         api({ path: '/users/unblock', body: body, type: TypeHTTP.POST, sendToken: true })
             .then(user => {
                 handler.setUser(user)
-                handler.notify(notifyType.SUCCESS, `Successfully unblocked ${user.fullName}`)
+                // handler.notify(notifyType.SUCCESS, `Successfully unblocked ${user.fullName}`)
             })
             .catch(error => console.log(error))
     }
@@ -135,14 +137,22 @@ const UserProfileScreen = () => {
                     :
                     request ?
                         request.fromUser._id === data.user._id ?
-                            <View style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, fontWeight: '600' }}><Text>Friend request sent</Text></View>
+                            <View style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, paddingVertical: 10 }}>
+                                <Text style={{ color: 'white', fontWeight: 600 }}>Friend request sent</Text>
+                            </View>
                             :
-                            <View style={{ flexDirection: 'row' }}>
-                                <View onClick={() => handleAcceptRequest(request)} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, fontWeight: '600' }}>Accept</View>
-                                <View onClick={() => handleRefuseRequest(request._id)} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, fontWeight: '600' }}>Refuse</View>
+                            <View style={{ flexDirection: 'row', gap: 5 }}>
+                                <TouchableOpacity onPress={() => handleAcceptRequest(request)} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10 }}>
+                                    <Text style={{ color: 'white', fontWeight: 600 }}>Accept</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleRefuseRequest(request._id)} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'red', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10 }}>
+                                    <Text style={{ color: 'white', fontWeight: 600 }}>Refuse</Text>
+                                </TouchableOpacity>
                             </View>
                         :
-                        <View onClick={() => handleCreateRequest({ _id: user._id, fullName: user.fullName, avatar: user.avatar })} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, fontWeight: '600', backgroundImage: 'url(/bg.webp)' }} ><Text>Add Friend</Text></View>
+                        <TouchableOpacity onPress={() => handleCreateRequest({ _id: user._id, fullName: user.fullName, avatar: user.avatar })} style={{ fontSize: 12, fontFamily: 'Poppins', backgroundColor: 'green', paddingVertical: 6, paddingHorizontal: 12, color: 'white', borderRadius: 10, paddingVertical: 10 }} >
+                            <Text style={{ color: 'white', fontWeight: 600 }}>Add Friend</Text>
+                        </TouchableOpacity>
                 }
             </View>
 
@@ -172,11 +182,15 @@ const UserProfileScreen = () => {
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8, paddingHorizontal: 15, gap: 5 }} >
                     <TouchableOpacity style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'orange', borderRadius: 10, fontWeight: '800' }}><Text style={{ fontSize: 18, color: 'white', fontWeight: 800 }}>Report</Text></TouchableOpacity>
                     {data.user?.friends.filter(item => item._id === user?._id)[0].block ?
-                        <TouchableOpacity onClick={() => handleUnblock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'brown', borderRadius: 10, fontWeight: '600' }}><Text style={{ color: 'white', fontWeight: 800, fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'brown', borderRadius: 10, fontSize: 18, }}>Blocked</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleUnblock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'brown', borderRadius: 10, paddingVertical: 8 }}>
+                            <Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>UnBlock</Text>
+                        </TouchableOpacity>
                         :
-                        <TouchableOpacity onClick={() => handleBlock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'red', borderRadius: 10, fontWeight: '600' }}><Text style={{ color: 'white', fontWeight: 800, fontSize: 18 }}>Block</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleBlock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'red', borderRadius: 10, paddingVertical: 8 }}>
+                            <Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>Block</Text>
+                        </TouchableOpacity>
                     }
-                    <TouchableOpacity onClick={() => handleUnfriend(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'black', borderRadius: 10, fontWeight: '600' }}><Text style={{ color: 'white', fontWeight: 800, fontSize: 18 }}>UnFriend</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleUnfriend(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'black', borderRadius: 10, paddingVertical: 8 }}><Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>UnFriend</Text></TouchableOpacity>
                 </View>
             }
             <TouchableOpacity onPress={goBack} style={{ position: 'absolute', top: 30, left: 10, zIndex: 22 }} >

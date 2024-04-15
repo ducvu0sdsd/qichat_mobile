@@ -13,6 +13,9 @@ import InformationScreens from './screens/informationScreen';
 import InformationUserScreen from './screens/informationUserScreen';
 import ForgetPhoneScreen from './screens/forgetPhoneScreen';
 import UserProfileScreen from './screens/userProfileScreen';
+import VideoDetailScreen from './screens/videoDetailScreen';
+import ImageDetailScreen from './screens/imageDetailScreen';
+import ParticipantCreateGroupScreen from './screens/displayDetail/participantCreateGroupScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -70,6 +73,18 @@ const Routes = () => {
         {
             name: 'UserProfile',
             component: UserProfileScreen
+        },
+        {
+            name: 'VideoDetail',
+            component: VideoDetailScreen
+        },
+        {
+            name: 'ImageDetail',
+            component: ImageDetailScreen
+        },
+        {
+            name: 'ParticipantCreateGroupScreen',
+            component: ParticipantCreateGroupScreen
         }
     ]
 
