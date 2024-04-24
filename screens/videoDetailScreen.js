@@ -7,6 +7,7 @@ const VideoDetailScreen = () => {
     const route = useRoute()
     const url = route.params.url
     const navigation = useNavigation();
+    // onPress={() => navigation.navigate("ImageDetail", { url: item.url })}
     return (
         <View style={{ width: '100%', height: '100%', position: 'relative' }}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 35, left: 15, zIndex: 1 }}>

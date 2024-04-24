@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native';
 import UserIcon from '../components/userIcon';
 import { TypeHTTP, api } from '../utils/api';
+import Header from '../components/header';
 
 const options = {
     FRIEND: 'a',
@@ -52,6 +53,8 @@ const SearchScreen = () => {
         if (currentOption === options.GROUP)
             return 'flex-end'
     }
+
+
     const route = useRoute()
     useEffect(() => {
         handler.checkToken(route.name)
@@ -67,13 +70,7 @@ const SearchScreen = () => {
     return (
         <View style={{ backgroundColor: 'white', height: '100%' }}>
             <View style={{ paddingHorizontal: 15, paddingTop: 50, height: '91%' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image source={friends} style={{ width: 40, height: 40, marginRight: 5 }} />
-                        <Text style={{ fontSize: 27, fontWeight: 'bold' }}>Search</Text>
-                    </View>
-                    <Image source={data.user?.avatar} style={{ borderRadius: 55, width: 55, height: 55 }} />
-                </View>
+                <Header screen={2} />
                 <View style={{ position: 'relative', marginTop: 15, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#F0F3F4', borderRadius: 25, height: 50 }}>
                     <View style={{ position: 'absolute', flexDirection: 'row', width: '100%', height: '100%', justifyContent: returnOption(), top: 0, left: 0, borderRadius: 25, overflow: 'hidden' }}>
                         <Image source={bg} style={{ width: '50%', height: '100%', borderRadius: 25 }} />
@@ -100,8 +97,8 @@ const SearchScreen = () => {
                                 {friends.map((friend, index) => {
                                     if (nameFilter === '' || friend.fullName.toLowerCase().includes(nameFilter.toLowerCase()))
                                         return <TouchableOpacity onPress={() => navigateToProfile(friend)} style={{ fontSize: 18, alignItems: 'center', flexDirection: 'row', gap: 10 }} key={index} >
-                                            <UserIcon style={{}} avatar={friend.avatar} />
-                                            <Text style={{ fontWeight: 700 }}>{friend.fullName}</Text>
+                                            <UserIcon size={50} avatar={friend.avatar} />
+                                            <Text style={{ fontWeight: 600, fontSize: 16 }}>{friend.fullName}</Text>
                                         </TouchableOpacity>
                                 })
                                 }
@@ -117,10 +114,10 @@ const SearchScreen = () => {
                                 if (nameFilter === '' || group.name.toLowerCase().includes(nameFilter.toLowerCase()))
                                     return <TouchableOpacity onClick={() => handleUserProfile(friend_id)} key={index} style={{ width: '100%', fontSize: 18, alignItems: 'center', flexDirection: 'row', gap: 10, justifyContent: 'space-between' }} >
                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                            <UserIcon style={{}} type={'Group'} avatar={group.image} />
-                                            <Text style={{ fontWeight: 650 }} >{group.name}</Text>
+                                            <UserIcon size={50} type={'Group'} avatar={group.image} />
+                                            <Text style={{ fontWeight: 600, fontSize: 16 }}>{group.name}</Text>
                                         </View>
-                                        <Text style={{ fontWeight: 650 }}>
+                                        <Text style={{ fontWeight: 600, fontSize: 13 }}>
                                             {`${group.users.length} participants`}
                                         </Text>
                                     </TouchableOpacity>

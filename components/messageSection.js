@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react'
 import { Animated, Image, Pressable, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import docx from '../assets/docx.png'
 import excel from '../assets/excel.png'
 import file from '../assets/file.png'
@@ -13,6 +14,7 @@ import { emoji, emojiStatus } from '../utils/emoji';
 import { io } from 'socket.io-client';
 import { baseURL } from '../utils/api';
 import { messageContext } from '../context/messageContext';
+import { globalContext } from '../context/globalContext';
 const socket = io.connect(baseURL)
 export const fileTypes = {
     docx: docx,
@@ -27,6 +29,8 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
     const navigation = useNavigation()
     const height = useRef(new Animated.Value(0)).current;
     const emojiRef = useRef()
+    const { data } = useContext(globalContext)
+    const { messageData } = useContext(messageContext)
 
     const handleTouchHover = () => {
         setDisplayEmoji(id)
@@ -140,7 +144,7 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
     }
     if (message.typeMessage === 'notify')
         return (
-            <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 10 }}>
                 <Text style={{ width: '70%', textAlign: 'center' }}>{message.information}</Text>
             </View>
         )
@@ -150,6 +154,11 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                 {(message.reply?._id && message.disabled === false) && (
                     <View style={{ overflowWrap: 'break-word', top: 10, flexDirection: 'row', justifyContent: style, left: style === 'flex-start' ? 45 : 0 }}>
                         <Text style={{ backgroundColor: '#f5f5f5c3', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}><Icon name='reply' style={{ color: '#999', fontSize: 17, marginRight: 5 }} /> {message.reply.information}</Text>
+                    </View>
+                )}
+                {(message.transfer === true && message.disabled === false) && (
+                    <View style={{ overflowWrap: 'break-word', top: 10, flexDirection: 'row', justifyContent: style, left: style === 'flex-start' ? 45 : 0 }}>
+                        <Text style={{ backgroundColor: '#f5f5f5c3', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}><Icon1 name='chart-line-variant' style={{ color: '#999', fontSize: 17, marginRight: 5 }} /> {message.user_id === data.user._id ? 'You forwarded 1 message' : `${messageData.currentRoom.users.filter(user => user._id === message.user_id)[0]?.fullName.split(' ')[messageData.currentRoom.users.filter(user => user._id === message.user_id)[0].fullName.split(' ').length - 1]} forwarded 1 message`}</Text>
                     </View>
                 )}
                 {messageItem()}
@@ -196,6 +205,9 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                                     setDisplayEmoji("")
                                 }} >
                                     <Icon name='reply' style={{ color: '#999', fontSize: 17, marginRight: 5 }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate('TransferMessageScreen', { message })}>
+                                    <Icon1 name='chart-line-variant' style={{ color: '#999', fontSize: 20, marginRight: 5 }} />
                                 </TouchableOpacity>
                             </View>
                         </View>

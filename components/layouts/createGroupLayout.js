@@ -9,8 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce'
-import { TypeHTTP, api } from '../../utils/api'
+import { TypeHTTP, api, baseURL } from '../../utils/api'
 import { globalContext } from '../../context/globalContext';
+import { io } from 'socket.io-client';
+const socket = io.connect(baseURL)
 
 const CreateGroupLayout = () => {
     const [image, setImage] = useState()
@@ -81,6 +83,11 @@ const CreateGroupLayout = () => {
                 setName('')
                 setImage()
                 setParticipants([data.user])
+                socket.emit('update-room', participants.map(item => {
+                    if (item._id !== data.user?._id) {
+                        return item._id
+                    }
+                }))
             })
             .catch(error => {
                 console.log(error)

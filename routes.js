@@ -15,7 +15,8 @@ import ForgetPhoneScreen from './screens/forgetPhoneScreen';
 import UserProfileScreen from './screens/userProfileScreen';
 import VideoDetailScreen from './screens/videoDetailScreen';
 import ImageDetailScreen from './screens/imageDetailScreen';
-import ParticipantCreateGroupScreen from './screens/displayDetail/participantCreateGroupScreen';
+import OverviewMedia from './screens/overviewMedia';
+import TransferMessageScreen from './screens/transferMessageScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -83,8 +84,12 @@ const Routes = () => {
             component: ImageDetailScreen
         },
         {
-            name: 'ParticipantCreateGroupScreen',
-            component: ParticipantCreateGroupScreen
+            name: 'OverviewMedia',
+            component: OverviewMedia
+        },
+        {
+            name: 'TransferMessageScreen',
+            component: TransferMessageScreen
         }
     ]
 

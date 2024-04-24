@@ -60,7 +60,14 @@ const InformationUserScreen = () => {
             });
 
             if (!result.cancelled) {
-                setImage(result.assets[0])
+                // console.log(result.assets[0])
+                setImage({
+                    base64: result.assets[0].base64,
+                    originalname: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    mimetype: result.assets[0].mimeType,
+                    size: result.assets[0].fileSize
+                })
                 setImageUri(result.assets[0].uri)
             }
         } catch (error) {
@@ -79,15 +86,11 @@ const InformationUserScreen = () => {
                 return;
             }
 
-            const formData = new FormData()
-            formData.append("user", JSON.stringify(user))
-            if (imageUri !== user.avatar) {
-                formData.append("image", JSON.stringify(image))
-            }
-            handler.showAlert("Success", "Success")
-            api({ type: TypeHTTP.PUT, path: `/users/update-information/${user._id}`, sendToken: true, body: formData })
+            user.avatar = image
+            api({ type: TypeHTTP.PUT, path: `/users/update-information-mobile/${user._id}`, sendToken: true, body: user })
                 .then(res => {
-                    console.log(res)
+                    handler.showAlert("Success", "Success")
+                    handler.setUser(res)
                 })
                 .catch(error => {
                     console.log(error)
@@ -257,6 +260,7 @@ const InformationUserScreen = () => {
                         <TouchableOpacity onPress={() => handleSubmitPassword()} style={{ marginTop: 20, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', borderRadius: 10, backgroundColor: '#FF6E6E', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ fontSize: 18, color: 'white' }}>Change</Text>
                         </TouchableOpacity>
+                        <View style={{ height: 50 }}></View>
                     </>
                 )}
             </ScrollView>

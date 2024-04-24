@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { createContext } from "react";
 import { globalContext } from './globalContext';
 import { TypeHTTP, api, baseURL } from '../utils/api';
-import { useRoute } from '@react-navigation/native';
+import { io } from 'socket.io-client';
+const socket = io.connect(baseURL)
 
 export const messageContext = createContext()
 
@@ -27,33 +28,23 @@ const MessageContext = ({ children }) => {
         setRooms
     }
 
-    // useEffect(() => {
-    //     if (data.user?._id) {
-    //         // api({ type: TypeHTTP.GET, sendToken: true, path: `/friends-operating/${data.user?._id}` })
-    //         //     .then(users => {
-    //         //         setFriendsOperation(users)
-    //         //     })
-    //         socket.on('update-operation-rooms', (body) => {
-    //             if (body.friends_id?.includes(data.user?._id)) {
-    //                 api({ type: TypeHTTP.GET, path: `/rooms/${data.user?._id}`, sendToken: true })
-    //                     .then(rooms => {
-    //                         setRooms(rooms)
-    //                     })
-    //             }
-    //         })
-    //         socket.on('update-operation-friends', (body) => {
-    //             if (body.friends_id?.includes(data.user?._id)) {
-    //                 api({ type: TypeHTTP.GET, sendToken: true, path: `/friends-operating/${data.user?._id}` })
-    //                     .then(users => setFriendsOperation(users))
-    //             }
-    //         })
-    //     }
+    useEffect(() => {
+        if (data.user?._id) {
+            socket.on('update-operation-rooms', (body) => {
+                if (body.friends_id?.includes(data.user?._id)) {
+                    api({ type: TypeHTTP.GET, path: `/rooms/${data.user?._id}`, sendToken: true })
+                        .then(rooms => {
+                            setCurrentRoom(rooms.filter(item => item._id === currentRoom?._id)[0])
+                            setRooms(rooms)
+                        })
+                }
+            })
+        }
 
-    //     return () => {
-    //         socket.off('update-operation-rooms')
-    //         socket.off('update-operation-friends')
-    //     }
-    // }, [data.user?._id])
+        return () => {
+            socket.off('update-operation-rooms')
+        }
+    }, [data.user?._id, currentRoom])
 
     useEffect(() => {
         if (currentRoom?._id)

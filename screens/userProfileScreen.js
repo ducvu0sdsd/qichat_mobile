@@ -104,7 +104,7 @@ const UserProfileScreen = () => {
         api({ path: '/users/block', body: body, type: TypeHTTP.POST, sendToken: true })
             .then(user => {
                 handler.setUser(user)
-                handler.notify(notifyType.SUCCESS, `Successfully blocked ${user.fullName}`)
+                // handler.notify(notifyType.SUCCESS, `Successfully blocked ${user.fullName}`)
             })
             .catch(error => console.log(error))
     }
@@ -158,39 +158,47 @@ const UserProfileScreen = () => {
 
             <View style={{ height: 10 }} />
             <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5 }}>
-                <Text style={{ paddingRight: 10, fontSize: 20, width: 'auto', fontWeight: 'bold' }}>Full Name:</Text>
-                <Text style={{ fontSize: 20 }}>{user?.fullName}</Text>
+                <Text style={{ paddingRight: 10, fontSize: 17, width: 'auto', fontWeight: 'bold' }}>Full Name:</Text>
+                <Text style={{ fontSize: 17 }}>{user?.fullName}</Text>
             </View>
             <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5 }}>
-                <Text style={{ paddingRight: 10, fontSize: 20, width: 'auto', fontWeight: 'bold' }}>{user?.email ? 'Email:' : 'Phone:'}</Text>
-                <Text style={{ fontSize: 20 }}>{user?.email ? user?.email : user?.phone}</Text>
+                <Text style={{ paddingRight: 10, fontSize: 17, width: 'auto', fontWeight: 'bold' }}>{user?.email ? 'Email:' : 'Phone:'}</Text>
+                <Text style={{ fontSize: 17 }}>{user?.email ? user?.email : user?.phone}</Text>
             </View>
             <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5 }}>
-                <Text style={{ paddingRight: 10, fontSize: 20, width: 'auto', fontWeight: 'bold' }}>Date Of Birth:</Text>
-                <Text style={{ fontSize: 20 }}>{formatDateOfBirth(user?.dateOfBirth)}</Text>
+                <Text style={{ paddingRight: 10, fontSize: 17, width: 'auto', fontWeight: 'bold' }}>Date Of Birth:</Text>
+                <Text style={{ fontSize: 17 }}>{formatDateOfBirth(user?.dateOfBirth)}</Text>
             </View>
             <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5 }}>
-                <Text style={{ paddingRight: 10, fontSize: 20, width: 'auto', fontWeight: 'bold' }}>Gender:</Text>
-                <Text style={{ fontSize: 20 }}>{user?.gender}</Text>
+                <Text style={{ paddingRight: 10, fontSize: 17, width: 'auto', fontWeight: 'bold' }}>Gender:</Text>
+                <Text style={{ fontSize: 17 }}>{user?.gender}</Text>
             </View>
             <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5 }}>
-                <Text style={{ paddingRight: 10, fontSize: 20, width: 'auto', fontWeight: 'bold' }}>Bio:</Text>
-                <Text style={{ fontSize: 20 }}>{user?.bio}</Text>
+                <Text style={{ paddingRight: 10, fontSize: 17, width: 'auto', fontWeight: 'bold' }}>Bio:</Text>
+                <Text style={{ fontSize: 17 }}>{user?.bio}</Text>
             </View>
             {
                 data.user?.friends.map(item => item._id).includes(user?._id) &&
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8, paddingHorizontal: 15, gap: 5 }} >
-                    <TouchableOpacity style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'orange', borderRadius: 10, fontWeight: '800' }}><Text style={{ fontSize: 18, color: 'white', fontWeight: 800 }}>Report</Text></TouchableOpacity>
+                    <TouchableOpacity style={{ fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'orange', borderRadius: 10, fontWeight: '800' }}>
+                        <Text style={{ fontSize: 16, color: 'white', fontWeight: 500 }}>
+                            Report
+                        </Text>
+                    </TouchableOpacity>
                     {data.user?.friends.filter(item => item._id === user?._id)[0].block ?
                         <TouchableOpacity onPress={() => handleUnblock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'brown', borderRadius: 10, paddingVertical: 8 }}>
-                            <Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>UnBlock</Text>
+                            <Text style={{ color: 'white', fontWeight: 500, fontSize: 16 }}>UnBlock</Text>
                         </TouchableOpacity>
                         :
                         <TouchableOpacity onPress={() => handleBlock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'red', borderRadius: 10, paddingVertical: 8 }}>
-                            <Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>Block</Text>
+                            <Text style={{ color: 'white', fontWeight: 500, fontSize: 16 }}>Block</Text>
                         </TouchableOpacity>
                     }
-                    <TouchableOpacity onPress={() => handleUnfriend(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'black', borderRadius: 10, paddingVertical: 8 }}><Text style={{ color: 'white', fontWeight: 600, fontSize: 18 }}>UnFriend</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleUnfriend(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'black', borderRadius: 10, paddingVertical: 8 }}>
+                        <Text style={{ color: 'white', fontWeight: 500, fontSize: 16 }}>
+                            UnFriend
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             }
             <TouchableOpacity onPress={goBack} style={{ position: 'absolute', top: 30, left: 10, zIndex: 22 }} >

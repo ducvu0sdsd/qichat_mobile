@@ -62,7 +62,7 @@ const ChatScreen = () => {
 
     useEffect(() => {
         try {
-            if (messageRef.current) {
+            if (messageRef.current !== null) {
                 setTimeout(() => {
                     messageRef.current.scrollToEnd({ animated: true });
                 }, 500);
@@ -153,18 +153,18 @@ const ChatScreen = () => {
             <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', height: '8%' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => handleBackScreen()}>
-                        <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 10 }} />
+                        <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 5 }} />
                     </TouchableOpacity>
-                    <UserIcon size={45} avatar={returnImage(messageData.currentRoom, data.user)} />
-                    <View style={{ marginLeft: 10 }}>
+                    <UserIcon online={returnRemainingObject(messageData.currentRoom, data.user)?.operating.status} size={45} avatar={returnImage(messageData.currentRoom, data.user)} />
+                    <View style={{ marginLeft: 5 }}>
                         <Text style={{ fontSize: 16, fontWeight: 600 }}>{returnName(messageData.currentRoom, data.user)}</Text>
                         <Text style={{ fontSize: 13, marginLeft: 3 }}>
                             {messageData.currentRoom?.type === 'Single' ?
                                 data.user.friends.map(user => user._id).includes(returnID(messageData.currentRoom, data.user)) ?
-                                    returnRemainingObject(messageData.currentRoom, data.user).operating.status === true ?
+                                    returnRemainingObject(messageData.currentRoom, data.user)?.operating.status === true ?
                                         "Online"
                                         :
-                                        `Operated in ${tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user).operating.time) ? tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user).operating.time) : '0 second'} ago`
+                                        `Operated in ${tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user)?.operating.time) ? tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user)?.operating.time) : '0 second'} ago`
                                     :
                                     "Stranger"
                                 :

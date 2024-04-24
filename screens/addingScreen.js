@@ -8,6 +8,7 @@ import FriendsRequestLayout from '../components/layouts/friendsRequestLayout';
 import CreateGroupLayout from '../components/layouts/createGroupLayout';
 import AddFriendLayout from '../components/layouts/addFriendLayout';
 import { useRoute } from '@react-navigation/native'
+import Header from '../components/header'
 export const options = {
     ADD_FRIEND: 'a',
     CREATE_GROUP: 'b',
@@ -40,13 +41,7 @@ const AddingScreen = () => {
     return (
         <View style={{ backgroundColor: 'white', height: '100%' }}>
             <View style={{ paddingHorizontal: 15, paddingTop: 30, height: '91%', flexDirection: 'column' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image source={adding} style={{ width: 45, height: 45, marginRight: 10 }} />
-                        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Adding</Text>
-                    </View>
-                    <Image source={data.user?.avatar} style={{ borderRadius: 55, width: 55, height: 55 }} />
-                </View>
+                <Header screen={1} />
                 <View style={{ position: 'relative', marginTop: 10, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#F0F3F4', borderRadius: 25, height: 50 }}>
                     <View style={{ position: 'absolute', flexDirection: 'row', justifyContent: returnOption(), width: '100%', height: '100%', top: 0, left: 0, borderRadius: 25, overflow: 'hidden' }}>
                         <Image source={bg} style={{ width: '33%', height: '100%', borderRadius: 25 }} />

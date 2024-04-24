@@ -12,6 +12,7 @@ import { globalContext } from '../context/globalContext'
 import { signWithGoogle } from '../components/firebase/firebase'
 import { useRoute } from '@react-navigation/native';
 import authContext from '../context/authContext'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 const SignInScreen = () => {
 
@@ -27,6 +28,12 @@ const SignInScreen = () => {
                 if (goal !== null)
                     navigation.navigate(goal)
             })
+    }, [])
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId: "735418652883-bfna37eih7oqpidssnuobbqspk0bmqnl.apps.googleusercontent.com"
+        })
     }, [])
 
     const handleSignInWithPhoneNumber = async () => {

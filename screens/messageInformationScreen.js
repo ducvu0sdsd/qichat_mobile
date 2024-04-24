@@ -39,25 +39,6 @@ const MessageInformationScreen = () => {
         }
     }, [messageData.currentRoom])
 
-    // const pickFile = async () => {
-    //     let result = await FilePicker.getDocumentAsync({
-    //         // multiple: true,
-    //         copyToCacheDirectory: true,
-    //         type: 'image/*'
-    //     })
-    //     if (!result.canceled) {
-    //         const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-    //             encoding: FileSystem.EncodingType.Base64,
-    //         });
-    //         setImage({
-    //             base64,
-    //             originalname: result.assets[0].name,
-    //             uri: result.assets[0].uri,
-    //             mimetype: result.assets[0].mimeType,
-    //             size: result.assets[0].size
-    //         })
-    //     }
-    // };
 
     const options = [
         { label: 'Name', value: 'name' },
@@ -175,6 +156,8 @@ const MessageInformationScreen = () => {
                     }
                     socket.emit('send_message', body)
                 }
+                const friendUpdate = [...usersJoinGroup.map(item => item._id), ...leftUsers.map(item => item._id)]
+                socket.emit('update-room', friendUpdate)
                 setDisplayFind(false)
             })
             .catch(error => {
@@ -212,6 +195,33 @@ const MessageInformationScreen = () => {
         }
     }
 
+    const pickFile = async () => {
+
+        let result = await FilePicker.getDocumentAsync({
+            // multiple: true,
+            copyToCacheDirectory: true,
+            type: 'image/*'
+        })
+        if (!result.canceled) {
+            const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+            const body = {
+                image: {
+                    base64,
+                    originalname: result.assets[0].name,
+                    uri: result.assets[0].uri,
+                    mimetype: result.assets[0].mimeType,
+                    size: result.assets[0].size
+                },
+            }
+            api({ type: TypeHTTP.PUT, sendToken: true, path: `/rooms/update-image-mobile/${messageData.currentRoom?._id}`, body: body })
+                .then(res => {
+                    messageHandler.setCurrentRoom({ ...messageData.currentRoom, image: res.image })
+                })
+        }
+    };
+
     if (displayFind === false)
         return (
             <ScrollView style={{ paddingHorizontal: 15, width: '100%', paddingTop: 30, backgroundColor: 'white', height: '100%' }}>
@@ -224,7 +234,12 @@ const MessageInformationScreen = () => {
                     <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 9, width: '100%' }}>
                         <View style={{ top: 35 }}>
                             <View style={{ flexDirection: 'column', gap: 5, alignItems: 'center' }}  >
-                                <UserIcon size={110} avatar={returnImage(messageData.currentRoom, data.user)} />
+                                <View style={{ position: 'relative' }}>
+                                    <UserIcon size={110} avatar={returnImage(messageData.currentRoom, data.user)} />
+                                    {messageData.currentRoom?.type === 'Group' && <TouchableOpacity onPress={() => pickFile()} style={{ position: 'absolute', top: 0, right: -10 }}>
+                                        <Icon name='pencil' style={{ color: '#999', fontSize: 20 }} />
+                                    </TouchableOpacity>}
+                                </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                                     {editName ?
                                         <>
@@ -243,9 +258,9 @@ const MessageInformationScreen = () => {
                                         :
                                         <>
                                             <Text style={{ fontSize: 22, fontWeight: 600 }}>{returnName(messageData.currentRoom, data.user)}</Text>
-                                            <TouchableOpacity onPress={() => setEditName(true)} style={{}}>
+                                            {messageData.currentRoom?.type === 'Group' && <TouchableOpacity onPress={() => setEditName(true)} style={{}}>
                                                 <Icon name='pencil' style={{ color: '#999', fontSize: 20 }} />
-                                            </TouchableOpacity>
+                                            </TouchableOpacity>}
                                         </>
                                     }
                                 </View>
@@ -265,8 +280,8 @@ const MessageInformationScreen = () => {
                         </View>
                     </View>
                 </View>
-
-                <View style={{ marginTop: 50 }}>
+                <View style={{ marginTop: 35 }}></View>
+                {messageData.currentRoom?.type === 'Group' && <View style={{ marginTop: 15 }}>
                     <Text style={{ fontSize: 21, fontWeight: '600' }}>{`Participants (${participants.length})`}</Text>
                     <View style={{ paddingLeft: 10 }}>
                         {participants.map((user, index) => {
@@ -287,7 +302,7 @@ const MessageInformationScreen = () => {
                             </TouchableOpacity>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </View>}
                 <View style={{ marginTop: 15 }}>
                     <Text style={{ fontSize: 22, fontWeight: '600' }}>Attachments</Text>
                     <View style={{ paddingLeft: 10 }}>
@@ -306,13 +321,6 @@ const MessageInformationScreen = () => {
                             })
                         }
                     </View>
-                    {/* {files.length > 0 && <TouchableOpacity style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ borderRadius: 10, overflow: 'hidden', width: 200 }}>
-                            <ImageBackground source={bg} style={{ width: '100%', paddingVertical: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
-                                <Text style={{ fontSize: 14, color: 'white' }}>See All</Text>
-                            </ImageBackground>
-                        </View>
-                    </TouchableOpacity>} */}
                 </View>
 
 
@@ -327,12 +335,13 @@ const MessageInformationScreen = () => {
                             medias.map((media, index) => {
                                 if (index >= medias.length - 4) {
                                     if (media.url.includes("/image___")) {
-                                        return <TouchableOpacity>
+                                        return <TouchableOpacity onPress={() => navigation.navigate('OverviewMedia', { type: 'media', data: medias })}>
                                             <Image key={index} source={{ uri: media.url }} style={{ width: 90, height: 90, borderRadius: 10 }} />
                                         </TouchableOpacity>
                                     }
                                     if (media.url.includes("/video___")) {
-                                        return <TouchableOpacity style={{ backgroundColor: '#999', borderRadius: 10 }}>
+                                        return <TouchableOpacity onPress={() => navigation.navigate('OverviewMedia', { type: 'media', data: medias })} style={{ backgroundColor: '#999', borderRadius: 10, position: 'relative' }}>
+                                            <View style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 3 }}></View>
                                             <VideoPlayer key={index} url={media.url} style={{ width: 90, height: 90 }} />
                                         </TouchableOpacity>
                                     }
@@ -341,13 +350,6 @@ const MessageInformationScreen = () => {
                         }
                     </View>
                 </View>
-                {/* {medias.length > 0 && <TouchableOpacity style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ borderRadius: 10, overflow: 'hidden', width: 200 }}>
-                        <ImageBackground source={bg} style={{ width: '100%', paddingVertical: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
-                            <Text style={{ fontSize: 14, color: 'white' }}>See All</Text>
-                        </ImageBackground>
-                    </View>
-                </TouchableOpacity>} */}
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
                     {messageData.currentRoom?.creator === data.user?._id &&
                         <TouchableOpacity onPress={() => handleDisbandRoom()} style={{ backgroundColor: 'black', width: '45%', paddingVertical: 13, borderRadius: 10, flexDirection: 'row', justifyContent: 'center' }}>
@@ -365,16 +367,11 @@ const MessageInformationScreen = () => {
         return (
             <View style={{ width: '100%', height: '100%', backgroundColor: 'white', position: 'relative', flexDirection: 'column', gap: 5, paddingTop: 30, paddingHorizontal: 30 }}>
                 <Text style={{ fontSize: 21, marginTop: 10, fontFamily: 'Poppins' }}>Participants</Text>
-                {/* <View style={{ height: 60, width: '100%', borderRadius: 10, borderWidth: 2, borderColor: '#E5E7E9', flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10 }}>
-                    {participants.map((user, index) => (
-                        <Image key={index} source={{ uri: user.avatar }} style={{ borderRadius: 45, width: 45, height: 45 }} />
-                    ))}
-                </View> */}
                 {participants.map((user, index) => (
                     <View key={index} style={{ flexDirection: 'row', position: 'relative', alignItems: 'center', gap: 10, marginVertical: 5 }}>
                         <UserIcon avatar={user.avatar} size={50} />
                         <Text style={{ fontSize: 17, fontWeight: '600' }}>{user.fullName}</Text>
-                        {participants.map(item => item._id).includes(user._id) ?
+                        {user._id !== data.user?._id && (participants.map(item => item._id).includes(user._id) ?
                             messageData.currentRoom?.creator === data.user?._id &&
                             <TouchableOpacity onPress={() => setParticipants(participants.filter(item => item._id !== user._id))} style={{ borderWidth: 1, borderColor: '#ff4848', borderRadius: 10, position: 'absolute', right: 0 }}>
                                 <Icon name='minus' style={{ fontSize: 20, color: '#ff4848' }} />
@@ -382,7 +379,7 @@ const MessageInformationScreen = () => {
                             :
                             <TouchableOpacity onPress={() => setParticipants([...participants, user])} style={{ borderWidth: 1, borderColor: 'green', borderRadius: 10, position: 'absolute', right: 0 }}>
                                 <Icon name='plus' style={{ fontSize: 20, color: 'green' }} />
-                            </TouchableOpacity>
+                            </TouchableOpacity>)
                         }
                     </View>
                 ))}
@@ -411,7 +408,7 @@ const MessageInformationScreen = () => {
                         <View key={index} style={{ flexDirection: 'row', position: 'relative', alignItems: 'center', gap: 10, marginVertical: 5 }}>
                             <UserIcon avatar={user.avatar} size={50} />
                             <Text style={{ fontSize: 17, fontWeight: '600' }}>{user.fullName}</Text>
-                            {participants.map(item => item._id).includes(user._id) ?
+                            {user._id !== data.user?._id && (participants.map(item => item._id).includes(user._id) ?
                                 messageData.currentRoom?.creator === data.user?._id ?
                                     <TouchableOpacity onPress={() => setParticipants(participants.filter(item => item._id !== user._id))} style={{ borderWidth: 1, borderColor: '#ff4848', borderRadius: 10, position: 'absolute', right: 0 }}>
                                         <Icon name='minus' style={{ fontSize: 20, color: '#ff4848' }} />
@@ -424,7 +421,7 @@ const MessageInformationScreen = () => {
                                 <TouchableOpacity onPress={() => setParticipants([...participants, user])} style={{ borderWidth: 1, borderColor: 'green', borderRadius: 10, position: 'absolute', right: 0 }}>
                                     <Icon name='plus' style={{ fontSize: 20, color: 'green' }} />
                                 </TouchableOpacity>
-                            }
+                            )}
                         </View>
                     ))}
                 </ScrollView>
