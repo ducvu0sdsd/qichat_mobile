@@ -92,7 +92,7 @@ const SignUpScreen = () => {
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Sign Up</Text>
                 </View>
             </TouchableOpacity>
-            <View style={{ marginTop: 15 }}>
+            {/* <View style={{ marginTop: 15 }}>
                 <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Poppins' }}>Or</Text>
             </View>
             <TouchableOpacity onPress={() => handleSignUpWithGoogle()} style={{ marginTop: 15 }}>
@@ -100,7 +100,7 @@ const SignUpScreen = () => {
                     <Icon name='gmail' style={{ color: 'white', fontSize: 25, transform: [{ translateY: -1 }], marginRight: 5 }} />
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Sign up with Gmail</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={{ marginTop: 15 }} onPress={() => navigation.navigate('SignInScreen')}>
                 <Text style={{ fontFamily: 'Poppins', fontSize: 16, textAlign: 'center', color: 'white' }}>I’m already using Qichat?</Text>
             </TouchableOpacity>

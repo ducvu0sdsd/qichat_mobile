@@ -12,7 +12,6 @@ import { globalContext } from '../context/globalContext'
 import { signWithGoogle } from '../components/firebase/firebase'
 import { useRoute } from '@react-navigation/native';
 import authContext from '../context/authContext'
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 const SignInScreen = () => {
 
@@ -28,12 +27,6 @@ const SignInScreen = () => {
                 if (goal !== null)
                     navigation.navigate(goal)
             })
-    }, [])
-
-    useEffect(() => {
-        GoogleSignin.configure({
-            webClientId: "735418652883-bfna37eih7oqpidssnuobbqspk0bmqnl.apps.googleusercontent.com"
-        })
     }, [])
 
     const handleSignInWithPhoneNumber = async () => {
@@ -70,25 +63,25 @@ const SignInScreen = () => {
 
 
 
-    const handleSignInWithGoogle = () => {
-        signWithGoogle('sign-in')
-            .then(async res => {
-                if (res.user.statusSignUp === 'Complete Step 1') {
-                    handler.setUser(res.user)
-                    navigation.navigate('VerificationScreen')
-                } else if (res.user.statusSignUp === 'Complete Step 2') {
-                    handler.setUser(res.user)
-                    navigation.navigate('InformationScreen')
-                } else if (res.user.statusSignUp === 'Complete Sign Up') {
-                    await AsyncStorage.setItem('accessToken', res.tokens.accessToken)
-                    await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken)
-                    await AsyncStorage.setItem('user_id', res.user._id)
-                    await AsyncStorage.setItem('admin', res.user.admin + '')
-                    handler.setUser(res.user)
-                    navigation.navigate('MessageScreen')
-                }
-            })
-    }
+    // const handleSignInWithGoogle = () => {
+    //     signWithGoogle('sign-in')
+    //         .then(async res => {
+    //             if (res.user.statusSignUp === 'Complete Step 1') {
+    //                 handler.setUser(res.user)
+    //                 navigation.navigate('VerificationScreen')
+    //             } else if (res.user.statusSignUp === 'Complete Step 2') {
+    //                 handler.setUser(res.user)
+    //                 navigation.navigate('InformationScreen')
+    //             } else if (res.user.statusSignUp === 'Complete Sign Up') {
+    //                 await AsyncStorage.setItem('accessToken', res.tokens.accessToken)
+    //                 await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken)
+    //                 await AsyncStorage.setItem('user_id', res.user._id)
+    //                 await AsyncStorage.setItem('admin', res.user.admin + '')
+    //                 handler.setUser(res.user)
+    //                 navigation.navigate('MessageScreen')
+    //             }
+    //         })
+    // }
 
     return (
         <ImageBackground
@@ -120,7 +113,7 @@ const SignInScreen = () => {
             <TouchableOpacity style={{ marginTop: 15 }} onPress={() => navigation.navigate('ForgetPhone')}>
                 <Text style={{ fontFamily: 'Poppins', fontSize: 16, textAlign: 'center', color: 'white' }}>Forgot Password?</Text>
             </TouchableOpacity>
-            <View style={{ marginTop: 15 }}>
+            {/* <View style={{ marginTop: 15 }}>
                 <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Poppins' }}>Or</Text>
             </View>
             <TouchableOpacity onPress={() => handleSignInWithGoogle()} style={{ marginTop: 15 }}>
@@ -128,8 +121,8 @@ const SignInScreen = () => {
                     <Icon name='gmail' style={{ color: 'white', fontSize: 25, transform: [{ translateY: -1 }], marginRight: 5 }} />
                     <Text style={{ fontSize: 16, fontFamily: 'Poppins', color: 'white' }}>Sign in with Gmail</Text>
                 </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginTop: 15 }} onPress={() => navigation.navigate('SignUpScreen')}>
+            </TouchableOpacity> */}
+            <TouchableOpacity style={{ marginTop: 5 }} onPress={() => navigation.navigate('SignUpScreen')}>
                 <Text style={{ fontFamily: 'Poppins', fontSize: 16, textAlign: 'center', color: 'white' }}>I don't have account</Text>
             </TouchableOpacity>
         </ImageBackground>
