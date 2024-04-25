@@ -52,15 +52,14 @@ const InformationUserScreen = () => {
     const openGallery = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
-                aspect: [4, 3],
+                aspect: [1, 1],
                 quality: 1,
-                base64: true, // Chỉ định để nhận dữ liệu ảnh dưới dạng base64
+                base64: true,
             });
 
             if (!result.cancelled) {
-                // console.log(result.assets[0])
                 setImage({
                     base64: result.assets[0].base64,
                     originalname: result.assets[0].fileName,
@@ -79,16 +78,18 @@ const InformationUserScreen = () => {
     const handleSubmitInformation = () => {
         try {
             if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$/.test(user?.fullName)) {
+                handler.showAlert("Fail", "Invalid FullName")
                 return;
             }
 
             if (!user?.dateOfBirth || new Date().getFullYear() - new Date(user?.dateOfBirth).getFullYear() - (new Date().getMonth() < new Date(user?.dateOfBirth).getMonth() || (new Date().getMonth() === new Date(user?.dateOfBirth).getMonth() && new Date().getDate() < new Date(user?.dateOfBirth).getDate())) < 12) {
+                handler.showAlert("Fail", "Invalid Date Of Birth")
                 return;
             }
-
             user.avatar = image
             api({ type: TypeHTTP.PUT, path: `/users/update-information-mobile/${user._id}`, sendToken: true, body: user })
                 .then(res => {
+                    console.log(res)
                     handler.showAlert("Success", "Success")
                     handler.setUser(res)
                 })

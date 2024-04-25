@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native';
-import moon from '../assets/icon-moon.png'
+import qr from '../assets/icon-qr.png'
 import friends from '../assets/icon-friends.png'
 import message from '../assets/icon-message.png'
 import adding from '../assets/icon-adding.png'
@@ -41,9 +41,9 @@ const Menu = () => {
     return (
         <View style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 100 }}>
             <View style={{ backgroundColor: '#F0F3F4', justifyContent: 'space-evenly', height: 55, borderRadius: 55, flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('QRCodeScanner', { pathName })}>
                     <ImageBackground style={{ width: 50, height: 50, borderRadius: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <Image source={moon} style={{ width: 38, height: 38 }} />
+                        <Image source={qr} style={{ width: 50, height: 50 }} />
                     </ImageBackground>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>

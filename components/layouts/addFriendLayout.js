@@ -9,6 +9,7 @@ import { TypeHTTP, api } from '../../utils/api';
 import { useNavigation } from '@react-navigation/native'
 import { globalContext } from '../../context/globalContext';
 import { formatPhoneByFireBase } from '../../utils/call';
+import QRCode from 'react-native-qrcode-svg';
 
 const AddFriendLayout = () => {
 
@@ -46,9 +47,8 @@ const AddFriendLayout = () => {
     return (
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10, borderRadius: 10, overflow: 'hidden' }}>
-                <ImageBackground source={bg} style={{ width: 200, height: 200, position: 'relative', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-                    <Text style={{ fontSize: 18, color: 'white', fontWeight: 600 }}>Vũ Tiến Đức</Text>
-                    <Image source={avatar} style={{ width: 115, height: 115, borderRadius: 10 }} />
+                <ImageBackground source={bg} style={{ width: 200, height: 200, position: 'relative', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <QRCode value={JSON.stringify(data.user)} size={170} />
                 </ImageBackground>
             </View>
 

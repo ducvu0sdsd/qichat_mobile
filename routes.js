@@ -17,6 +17,7 @@ import VideoDetailScreen from './screens/videoDetailScreen';
 import ImageDetailScreen from './screens/imageDetailScreen';
 import OverviewMedia from './screens/overviewMedia';
 import TransferMessageScreen from './screens/transferMessageScreen';
+import QRCodeScanner from './screens/QRCodeScannerScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -90,6 +91,10 @@ const Routes = () => {
         {
             name: 'TransferMessageScreen',
             component: TransferMessageScreen
+        },
+        {
+            name: 'QRCodeScanner',
+            component: QRCodeScanner
         }
     ]
 

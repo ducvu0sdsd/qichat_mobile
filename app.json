@@ -18,6 +18,7 @@
       "bundleIdentifier": "com.misscoding.googleauthexporeactnative",
       "supportsTablet": true,
       "infoPlist": {
+        "NSCameraUsageDescription": "Your camera will be used to scan QR codes.",
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
@@ -34,11 +35,21 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "CAMERA",
+        "CAMERA_ROLL"
       ]
     },
     "plugins": [
       "@react-native-google-signin/google-signin",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Qichat to access your camera",
+          "microphonePermission": "Allow Qichat to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
       [
         "expo-image-picker",
         {

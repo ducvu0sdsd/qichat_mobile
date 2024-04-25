@@ -17,9 +17,11 @@ const UserProfileScreen = () => {
     const [request, setRequest] = useState()
     const navigation = useNavigation();
     const userInfo = route.params.user
+    const pathName = route.params.pathName
 
 
     useEffect(() => {
+        console.log(userInfo)
         setUser(userInfo)
         if (userInfo)
             api({ type: TypeHTTP.POST, sendToken: true, path: '/requests/get-by-2-user', body: { user_id1: userInfo?._id, user_id2: data.user?._id } })
@@ -41,7 +43,10 @@ const UserProfileScreen = () => {
 
     const goBack = () => {
         setRequest(undefined)
-        navigation.goBack();
+        if (pathName) {
+            navigation.navigate(pathName)
+        } else
+            navigation.goBack();
     };
     const handleRefuseRequest = (id) => {
         api({ type: TypeHTTP.DELETE, sendToken: true, path: `/requests/${id}` })

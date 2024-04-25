@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
 import Logo from '../components/logo'
@@ -57,6 +57,7 @@ const SignInScreen = () => {
                 }
             })
             .catch(error => {
+                handler.showAlert('Fail', "Invalid Information")
                 console.log(error)
             })
     }
