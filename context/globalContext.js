@@ -60,8 +60,6 @@ const GlobalContext = ({ children }) => {
         const publics = ['SignInScreen', 'SignUpScreen', 'VerificationScreen', 'InformationScreen', 'PublicScreen']
         const accessToken = await AsyncStorage.getItem('accessToken')
         const refreshToken = await AsyncStorage.getItem('refreshToken')
-        // await AsyncStorage.removeItem('accessToken')
-        // await AsyncStorage.removeItem('refreshToken')
         if (!accessToken)
             if (!refreshToken)
                 if (!publics.includes(pathname))
@@ -70,17 +68,22 @@ const GlobalContext = ({ children }) => {
             api({ type: TypeHTTP.GET, sendToken: true, path: '/get-user-by-tokens' })
                 .then(user => {
                     setUser(user)
-                    user.operating = {
-                        status: true,
-                        time: new Date()
+                    if (user.disable === true) {
+                        handler.showAlert("Fail", "This account has been locked")
+                        resolve('Lock')
+                    } else {
+                        user.operating = {
+                            status: true,
+                            time: new Date()
+                        }
+                        api({ type: TypeHTTP.PUT, sendToken: false, path: `/users/${user._id}`, body: user })
+                            .then(res => {
+                                const friends_id = res.friends.map(item => item._id)
+                                friends_id.push(res._id)
+                                socket.emit('update-room', friends_id)
+
+                            })
                     }
-                    api({ type: TypeHTTP.PUT, sendToken: false, path: `/users/${user._id}`, body: user })
-                        .then(res => {
-                            const friends_id = res.friends.map(item => item._id)
-                            friends_id.push(res._id)
-                            socket.emit('update-room', friends_id)
-                            resolve(null)
-                        })
                 })
                 .catch(async (error) => {
                     await AsyncStorage.removeItem('accessToken')

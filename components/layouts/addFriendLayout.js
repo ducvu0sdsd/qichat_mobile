@@ -48,7 +48,7 @@ const AddFriendLayout = () => {
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10, borderRadius: 10, overflow: 'hidden' }}>
                 <ImageBackground source={bg} style={{ width: 200, height: 200, position: 'relative', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <QRCode value={JSON.stringify(data.user)} size={170} />
+                    <QRCode value={JSON.stringify(data.user?._id)} size={170} />
                 </ImageBackground>
             </View>
 

@@ -53,7 +53,12 @@ const SignInScreen = () => {
                     await AsyncStorage.setItem('user_id', res.user._id)
                     await AsyncStorage.setItem('admin', res.user.admin + '')
                     handler.setUser(res.user)
-                    navigation.navigate('MessageScreen')
+                    if (res.user.disable === true) {
+                        handler.showAlert("Fail", 'This account has been locked')
+                        navigation.navigate('Lock')
+                    } else {
+                        navigation.navigate('MessageScreen')
+                    }
                 }
             })
             .catch(error => {

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TypeHTTP, api } from '../utils/api';
 const QRCodeScanner = () => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
@@ -20,7 +21,14 @@ const QRCodeScanner = () => {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         if (data) {
-            navigation.navigate('UserProfile', { user: JSON.parse(data), pathName })
+            api({
+                type: TypeHTTP.GET,
+                path: `/users/${JSON.parse(data)}`,
+                sendToken: true
+            })
+                .then(response => {
+                    navigation.navigate('UserProfile', { user: response, pathName })
+                })
         }
     };
 
@@ -37,7 +45,7 @@ const QRCodeScanner = () => {
             </TouchableOpacity>
             <Camera
                 style={styles.camera}
-                type={Camera.Constants.Type.back}
+                type={Camera.Constants.Type?.back}
                 onBarCodeScanned={handleBarCodeScanned}
             />
         </View>

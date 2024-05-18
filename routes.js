@@ -18,6 +18,8 @@ import ImageDetailScreen from './screens/imageDetailScreen';
 import OverviewMedia from './screens/overviewMedia';
 import TransferMessageScreen from './screens/transferMessageScreen';
 import QRCodeScanner from './screens/QRCodeScannerScreen';
+import LockScreen from './screens/lockScreen';
+import NotificationScreen from './screens/notificationScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -95,6 +97,14 @@ const Routes = () => {
         {
             name: 'QRCodeScanner',
             component: QRCodeScanner
+        },
+        {
+            name: 'Lock',
+            component: LockScreen
+        },
+        {
+            name: 'Notification',
+            component: NotificationScreen
         }
     ]
 
