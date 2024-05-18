@@ -356,9 +356,11 @@ const MessageInformationScreen = () => {
                             <Text style={{ color: 'white', fontSize: 16 }}>Disband the group</Text>
                         </TouchableOpacity>
                     }
-                    <TouchableOpacity onPress={() => handleLeaveRoom()} style={{ backgroundColor: '#ff4848', width: '45%', paddingVertical: 13, borderRadius: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                        <Text style={{ color: 'white', fontSize: 16 }}>Leave Group</Text>
-                    </TouchableOpacity>
+                    {messageData.currentRoom.type === 'Group' && (
+                        <TouchableOpacity onPress={() => handleLeaveRoom()} style={{ backgroundColor: '#ff4848', width: '45%', paddingVertical: 13, borderRadius: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Text style={{ color: 'white', fontSize: 16 }}>Leave Group</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
             </ScrollView >
 

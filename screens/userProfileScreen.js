@@ -185,11 +185,6 @@ const UserProfileScreen = () => {
             {
                 data.user?.friends.map(item => item._id).includes(user?._id) &&
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8, paddingHorizontal: 15, gap: 5 }} >
-                    <TouchableOpacity style={{ fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'orange', borderRadius: 10, fontWeight: '800' }}>
-                        <Text style={{ fontSize: 16, color: 'white', fontWeight: 500 }}>
-                            Report
-                        </Text>
-                    </TouchableOpacity>
                     {data.user?.friends.filter(item => item._id === user?._id)[0].block ?
                         <TouchableOpacity onPress={() => handleUnblock(data.user?._id, user?._id)} style={{ fontSize: 18, fontFamily: 'Poppins', paddingVertical: 6, paddingHorizontal: 12, color: 'white', backgroundColor: 'brown', borderRadius: 10, paddingVertical: 8 }}>
                             <Text style={{ color: 'white', fontWeight: 500, fontSize: 16 }}>UnBlock</Text>
