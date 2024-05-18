@@ -200,12 +200,14 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                                 <TouchableOpacity onPress={() => handleSendDisable()} >
                                     <Icon name='delete-left' style={{ color: '#999', fontSize: 17, marginRight: 5 }} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    messageHandler.setReply(message);
-                                    setDisplayEmoji("")
-                                }} >
-                                    <Icon name='reply' style={{ color: '#999', fontSize: 17, marginRight: 5 }} />
-                                </TouchableOpacity>
+                                {message.typeMessage === 'text' && (
+                                    <TouchableOpacity onPress={() => {
+                                        messageHandler.setReply(message);
+                                        setDisplayEmoji("")
+                                    }} >
+                                        <Icon name='reply' style={{ color: '#999', fontSize: 17, marginRight: 5 }} />
+                                    </TouchableOpacity>
+                                )}
                                 <TouchableOpacity onPress={() => navigation.navigate('TransferMessageScreen', { message })}>
                                     <Icon1 name='chart-line-variant' style={{ color: '#999', fontSize: 20, marginRight: 5 }} />
                                 </TouchableOpacity>

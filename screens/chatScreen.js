@@ -174,8 +174,8 @@ const ChatScreen = () => {
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Icon name='phone-outline' style={{ color: 'black', fontSize: 26, marginRight: 5 }} />
-                    <Icon name='video-outline' style={{ color: 'black', fontSize: 33, marginRight: 5 }} />
+                    {/* <Icon name='phone-outline' style={{ color: 'black', fontSize: 26, marginRight: 5 }} />
+                    <Icon name='video-outline' style={{ color: 'black', fontSize: 33, marginRight: 5 }} /> */}
                     <TouchableOpacity onPress={() => navigation.navigate('MessageInformationScreen')}>
                         <Icon name='information-outline' style={{ color: 'black', fontSize: 30, marginRight: 5 }} />
                     </TouchableOpacity>

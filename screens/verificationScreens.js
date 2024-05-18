@@ -64,6 +64,7 @@ const VerificationScreens = () => {
                 api({ type: TypeHTTP.PUT, body: { statusSignUp: 'Complete Step 2' }, path: `/users/${data.user._id}`, sendToken: false })
                     .then(res => {
                         if (res) {
+                            handler.setUser(res)
                             navigation.navigate('InformationScreen')
                         }
                     })
