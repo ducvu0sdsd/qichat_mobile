@@ -55,6 +55,7 @@ const MessageScreen = () => {
     useEffect(() => {
         api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
             .then(rooms => {
+                console.log(rooms)
                 messageHandler.setRooms(rooms)
             })
     }, [])

@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // export const baseURL = 'http://localhost:8080'
 export const systemID = '5f4a3e1b2c3d4e5f67890abc'
-export const baseURL = 'http://192.168.1.7:8080'
+export const baseURL = 'http://192.168.1.6:8080'
 // export const baseURL = 'https://shoeshop-backend.online'
 axios.defaults.baseURL = `${baseURL}/v1/api`
 

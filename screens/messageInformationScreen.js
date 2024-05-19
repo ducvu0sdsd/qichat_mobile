@@ -158,6 +158,11 @@ const MessageInformationScreen = () => {
                 }
                 const friendUpdate = [...usersJoinGroup.map(item => item._id), ...leftUsers.map(item => item._id)]
                 socket.emit('update-room', friendUpdate)
+                socket.emit('update-room', messageData.currentRoom.users.map(item => {
+                    if (item._id !== data.user?._id) {
+                        return item._id
+                    }
+                }))
                 setDisplayFind(false)
             })
             .catch(error => {
@@ -189,6 +194,11 @@ const MessageInformationScreen = () => {
                         users: messageData.currentRoom?.users.map(item => item._id)
                     }
                     socket.emit('send_message', body)
+                    socket.emit('update-room', messageData.currentRoom.users.map(item => {
+                        if (item._id !== data.user?._id) {
+                            return item._id
+                        }
+                    }))
                     setGroupName('')
                     setEditName(false)
                 })
@@ -356,7 +366,7 @@ const MessageInformationScreen = () => {
                             <Text style={{ color: 'white', fontSize: 16 }}>Disband the group</Text>
                         </TouchableOpacity>
                     }
-                    {messageData.currentRoom.type === 'Group' && (
+                    {messageData.currentRoom?.type === 'Group' && (
                         <TouchableOpacity onPress={() => handleLeaveRoom()} style={{ backgroundColor: '#ff4848', width: '45%', paddingVertical: 13, borderRadius: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Text style={{ color: 'white', fontSize: 16 }}>Leave Group</Text>
                         </TouchableOpacity>

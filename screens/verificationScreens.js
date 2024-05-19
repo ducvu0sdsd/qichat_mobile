@@ -41,14 +41,16 @@ const VerificationScreens = () => {
     }, [])
 
     useEffect(() => {
-        if (data.user?.phone) {
-            setPhone(data.user.phone);
-            const phoneProvider = new firebase.auth.PhoneAuthProvider()
-            phoneProvider
-                .verifyPhoneNumber(data.user.phone, recaptchaRef.current)
-                .then(confirmation => setVerification(confirmation))
-        } else if (data.user?.email) {
-            api({ sendToken: false, path: `/send-verify-code/${data.user.email}`, type: TypeHTTP.POST })
+        if (route.name === "VerificationScreen") {
+            if (data.user?.phone) {
+                setPhone(data.user.phone);
+                const phoneProvider = new firebase.auth.PhoneAuthProvider()
+                phoneProvider
+                    .verifyPhoneNumber(data.user.phone, recaptchaRef.current)
+                    .then(confirmation => setVerification(confirmation))
+            } else if (data.user?.email) {
+                api({ sendToken: false, path: `/send-verify-code/${data.user.email}`, type: TypeHTTP.POST })
+            }
         }
     }, [data.user]);
 
