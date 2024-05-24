@@ -12,21 +12,39 @@ const MessageContext = ({ children }) => {
     const [messages, setMessages] = useState([])
     const [reply, setReply] = useState()
     const [rooms, setRooms] = useState([])
+    const [usersSeen, setUsersSeen] = useState([])
     const { data } = useContext(globalContext)
 
     const messageData = {
         currentRoom,
         messages,
         reply,
-        rooms
+        rooms,
+        usersSeen
     }
 
     const messageHandler = {
         setCurrentRoom,
         setMessages,
         setReply,
-        setRooms
+        setRooms,
+        setUsersSeen
     }
+
+    useEffect(() => {
+        if (!rooms.map(item => item._id).includes(currentRoom?._id)) {
+            setCurrentRoom(undefined)
+        }
+    }, [rooms])
+
+    useEffect(() => {
+        socket.on(`update_seen_${currentRoom?._id}`, (data) => {
+            setUsersSeen(data?.users)
+        })
+        return () => {
+            socket.off(`update_seen_${currentRoom?._id}`)
+        }
+    }, [currentRoom])
 
     useEffect(() => {
         if (data.user?._id) {

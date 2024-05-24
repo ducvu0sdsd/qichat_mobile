@@ -17,6 +17,8 @@ import * as FilePicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce'
+import admin from '../assets/admin.png'
+import removeAdmin from '../assets/remove-admin.png'
 const socket = io.connect(baseURL)
 
 const MessageInformationScreen = () => {
@@ -34,7 +36,10 @@ const MessageInformationScreen = () => {
     const [editName, setEditName] = useState(false)
 
     useEffect(() => {
-        if (messageData.currentRoom) {
+        if (messageData.currentRoom === undefined) {
+            navigation.navigate("MessageScreen")
+        }
+        else {
             setParticipants(messageData.currentRoom?.users)
         }
     }, [messageData.currentRoom])
@@ -105,7 +110,11 @@ const MessageInformationScreen = () => {
         if (room) {
             room.users = room.users.filter(user => user._id !== data.user?._id)
             if (!room.users.map(item => item._id).includes(room.creator)) {
-                room.creator = room.users[room.users?.length - 1]._id
+                if (room.deputies?.length > 0) {
+                    room.creator = room.deputies[0]
+                    room.deputies = room.deputies.filter((item, index) => index !== 0)
+                } else
+                    room.creator = room.users[room.users?.length - 1]._id
             }
             api({ type: TypeHTTP.PUT, path: `/rooms/${data.user?._id}`, sendToken: true, body: room })
                 .then(rooms => {
@@ -231,6 +240,46 @@ const MessageInformationScreen = () => {
                 })
         }
     };
+
+    const addDeputy = (user_id, userName) => {
+        api({ body: { room_id: messageData.currentRoom._id, user_id }, path: '/rooms/add-deputy', type: TypeHTTP.POST, sendToken: true })
+            .then(newRoom => {
+                messageHandler.setCurrentRoom(newRoom)
+                const body = {
+                    room_id: messageData.currentRoom._id,
+                    reply: null,
+                    information: `${userName} has been appointed deputy head`,
+                    typeMessage: 'notify',
+                    user_id: systemID
+                }
+                socket.emit('send_message', body)
+                socket.emit('update-room', messageData.currentRoom.users.map(item => {
+                    if (item._id !== data.user?._id) {
+                        return item._id
+                    }
+                }))
+            })
+    }
+
+    const removeDeputy = (user_id, userName) => {
+        api({ body: { room_id: messageData.currentRoom._id, user_id }, path: '/rooms/remove-deputy', type: TypeHTTP.POST, sendToken: true })
+            .then(newRoom => {
+                messageHandler.setCurrentRoom(newRoom)
+                const body = {
+                    room_id: messageData.currentRoom._id,
+                    reply: null,
+                    information: `${userName} is no longer deputy manager`,
+                    typeMessage: 'notify',
+                    user_id: systemID
+                }
+                socket.emit('send_message', body)
+                socket.emit('update-room', messageData.currentRoom.users.map(item => {
+                    if (item._id !== data.user?._id) {
+                        return item._id
+                    }
+                }))
+            })
+    }
 
     if (displayFind === false)
         return (
@@ -382,17 +431,48 @@ const MessageInformationScreen = () => {
                 {participants.map((user, index) => (
                     <View key={index} style={{ flexDirection: 'row', position: 'relative', alignItems: 'center', gap: 10, marginVertical: 5 }}>
                         <UserIcon avatar={user.avatar} size={50} />
-                        <Text style={{ fontSize: 17, fontWeight: '600' }}>{user.fullName}</Text>
-                        {user._id !== data.user?._id && (participants.map(item => item._id).includes(user._id) ?
-                            messageData.currentRoom?.creator === data.user?._id &&
-                            <TouchableOpacity onPress={() => setParticipants(participants.filter(item => item._id !== user._id))} style={{ borderWidth: 1, borderColor: '#ff4848', borderRadius: 10, position: 'absolute', right: 0 }}>
-                                <Icon name='minus' style={{ fontSize: 20, color: '#ff4848' }} />
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity onPress={() => setParticipants([...participants, user])} style={{ borderWidth: 1, borderColor: 'green', borderRadius: 10, position: 'absolute', right: 0 }}>
-                                <Icon name='plus' style={{ fontSize: 20, color: 'green' }} />
-                            </TouchableOpacity>)
-                        }
+                        <View>
+                            <Text style={{ fontSize: 17, fontWeight: '600' }}>{user.fullName}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: '400' }}>{user._id === messageData.currentRoom?.creator ? 'Admin' : messageData.currentRoom?.deputies.includes(user._id) ? "Deputy" : "Member"}</Text>
+                        </View>
+                        <View style={{ position: 'absolute', right: 0, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                            {user._id !== data.user?._id && (participants.map(item => item._id).includes(user._id) ?
+                                messageData.currentRoom?.creator === data.user?._id ? (
+                                    <>
+                                        {(messageData.currentRoom.deputies.includes(user._id)) ?
+                                            (
+                                                <TouchableOpacity onPress={() => removeDeputy(user._id, user.fullName)}>
+                                                    <Image source={removeAdmin} style={{ height: 35, width: 35 }} />
+                                                </TouchableOpacity>
+                                            )
+                                            :
+                                            (
+                                                <TouchableOpacity onPress={() => addDeputy(user._id, user.fullName)}>
+                                                    <Image source={admin} style={{ height: 35, width: 35 }} />
+                                                </TouchableOpacity>
+                                            )
+                                        }
+                                        {(messageData.currentRoom?.creator === data.user?._id || (messageData.currentRoom?.deputies.includes(data.user?._id) && !messageData.currentRoom?.deputies.includes(user._id))) && (
+                                            <TouchableOpacity onPress={() => setParticipants(participants.filter(item => item._id !== user._id))} style={{ borderWidth: 1, borderColor: '#ff4848', borderRadius: 10 }}>
+                                                <Icon name='minus' style={{ fontSize: 20, color: '#ff4848' }} />
+                                            </TouchableOpacity>
+                                        )}
+                                    </>
+                                )
+                                    :
+                                    (<>
+                                        {(messageData.currentRoom?.deputies.includes(data.user?._id) && !messageData.currentRoom?.deputies.includes(user._id) && messageData.currentRoom?.creator !== user._id) && (
+                                            <TouchableOpacity onPress={() => setParticipants(participants.filter(item => item._id !== user._id))} style={{ borderWidth: 1, borderColor: '#ff4848', borderRadius: 10 }}>
+                                                <Icon name='minus' style={{ fontSize: 20, color: '#ff4848' }} />
+                                            </TouchableOpacity>
+                                        )}
+                                    </>)
+                                :
+                                <TouchableOpacity onPress={() => setParticipants([...participants, user])} style={{ borderWidth: 1, borderColor: 'green', borderRadius: 10, position: 'absolute', right: 0 }}>
+                                    <Icon name='plus' style={{ fontSize: 20, color: 'green' }} />
+                                </TouchableOpacity>)
+                            }
+                        </View>
                     </View>
                 ))}
                 <TouchableOpacity onPress={() => handleSubmit()} style={{ backgroundColor: 'green', marginBottom: 10, width: '100%', paddingVertical: 13, borderRadius: 10, flexDirection: 'row', justifyContent: 'center' }}>

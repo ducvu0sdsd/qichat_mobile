@@ -145,7 +145,7 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
     if (message.typeMessage === 'notify')
         return (
             <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 10 }}>
-                <Text style={{ width: '70%', textAlign: 'center' }}>{message.information}</Text>
+                <Text style={{ width: '80%', textAlign: 'center' }}>{message.information}</Text>
             </View>
         )
     else
@@ -215,7 +215,11 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                         </View>
                     </Animated.View>
                 </View>
-
+                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    {messageData.usersSeen?.filter(item => (item._id !== data.user?._id && item.seen === message._id)).map((user, index) =>
+                        <Image source={{ uri: user.avatar }} style={{ height: 15, width: 15, borderRadius: 15 }} />
+                    )}
+                </View>
             </View >
         )
 }

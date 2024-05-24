@@ -30,6 +30,30 @@ const ChatScreen = () => {
     const navigation = useNavigation();
     const [record, setRecord] = useState(false)
     const [displayEmoji, setDisplayEmoji] = useState('')
+    const [updateSeen, setUpdateSeen] = useState(false)
+    const [sentFile, setSentFile] = useState(false)
+
+    useEffect(() => {
+        let updated = false
+        if (messageData.currentRoom && messageData.messages.length > 1) {
+            const user = messageData.currentRoom.users.filter(item => item._id === data.user?._id)[0]
+            if (messageData.currentRoom._id === messageData.messages[0].room_id) {
+                if (user.seen !== messageData.messages[messageData.messages.length - 1]._id) {
+                    socket.emit('update_seen', {
+                        room_id: messageData.currentRoom._id, user_id: data.user?._id, seen: messageData.messages[messageData.messages.length - 1]._id, users: messageData.currentRoom.users.map(item => {
+                            if (item._id !== data.user?._id) {
+                                return item._id
+                            }
+                        })
+                    })
+                } else {
+                    messageHandler.setUsersSeen(messageData.currentRoom.users)
+                }
+            }
+        }
+        if (updated === false)
+            messageHandler.setUsersSeen(messageData.currentRoom?.users)
+    }, [messageData.messages, messageData.currentRoom, sentFile])
 
 
     const route = useRoute()
@@ -59,6 +83,12 @@ const ChatScreen = () => {
             socket.off(messageData.currentRoom?._id);
         }
     }, [socket, messageData.currentRoom])
+
+    useEffect(() => {
+        if (messageData.currentRoom === undefined) {
+            navigation.navigate("MessageScreen")
+        }
+    }, [messageData.currentRoom])
 
     useEffect(() => {
         try {
@@ -111,6 +141,7 @@ const ChatScreen = () => {
                     .then(res => {
                         socket.emit('update-message', { room_id: messageData.currentRoom._id, information: files.length, user_id: data.user?._id, users: messageData.currentRoom?.users.map(item => item._id), _id: res._id })
                         setInformation('')
+                        setSentFile(!sentFile)
                         messageHandler.setReply(undefined)
                     })
             } catch (error) {
@@ -118,6 +149,7 @@ const ChatScreen = () => {
             }
         }
         setFiles([])
+        setUpdateSeen(!updateSeen)
         setRecord(false)
     }
 
@@ -155,13 +187,13 @@ const ChatScreen = () => {
                     <TouchableOpacity onPress={() => handleBackScreen()}>
                         <Icon name='arrow-left' style={{ color: 'black', fontSize: 30, marginRight: 5 }} />
                     </TouchableOpacity>
-                    <UserIcon online={returnRemainingObject(messageData.currentRoom, data.user)?.operating.status} size={45} avatar={returnImage(messageData.currentRoom, data.user)} />
+                    <UserIcon online={returnRemainingObject(messageData.currentRoom, data.user)?.operating?.status} size={45} avatar={returnImage(messageData.currentRoom, data.user)} />
                     <View style={{ marginLeft: 5 }}>
                         <Text style={{ fontSize: 16, fontWeight: 600 }}>{returnName(messageData.currentRoom, data.user)}</Text>
                         <Text style={{ fontSize: 13, marginLeft: 3 }}>
                             {messageData.currentRoom?.type === 'Single' ?
                                 data.user.friends.map(user => user._id).includes(returnID(messageData.currentRoom, data.user)) ?
-                                    returnRemainingObject(messageData.currentRoom, data.user)?.operating.status === true ?
+                                    returnRemainingObject(messageData.currentRoom, data.user)?.operating?.status === true ?
                                         "Online"
                                         :
                                         `Operated in ${tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user)?.operating.time) ? tinhSoPhutCham(returnRemainingObject(messageData.currentRoom, data.user)?.operating.time) : '0 second'} ago`

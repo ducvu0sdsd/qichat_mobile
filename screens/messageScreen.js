@@ -55,7 +55,6 @@ const MessageScreen = () => {
     useEffect(() => {
         api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/${data.user?._id}` })
             .then(rooms => {
-                console.log(rooms)
                 messageHandler.setRooms(rooms)
             })
     }, [])
@@ -109,9 +108,13 @@ const MessageScreen = () => {
                 </View>
                 {currentOption === options.CHATS ?
                     <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 15, marginHorizontal: 5 }}>
-                        {messageData.rooms.map((room, index) => {
-                            return <UserMessage key={index} room={room} />
-                        })}
+                        {messageData.rooms.length > 0 ?
+                            messageData.rooms.map((room, index) => {
+                                return <UserMessage key={index} room={room} />
+                            })
+                            :
+                            <Text style={{ width: '100%', fontSize: 15, textAlign: 'center', marginTop: 300 }}>There are no friends yet. Make friends to chat together!</Text>
+                        }
                     </ScrollView>
                     :
                     currentOption === options.GROUPS ?
@@ -136,7 +139,7 @@ const MessageScreen = () => {
                         </ScrollView>
                         :
                         <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 15, marginHorizontal: 5 }}>
-                            {friendsOperation.map((friend, index) => {
+                            {friendsOperation.length > 0 ? friendsOperation.map((friend, index) => {
                                 return <TouchableOpacity onPress={() => navigateToProfile(friend)} key={index} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginVertical: 3 }}>
                                     <UserIcon avatar={friend.avatar} size={50} online={true} />
                                     <View>
@@ -144,7 +147,10 @@ const MessageScreen = () => {
                                         <Text>{'Online'}</Text>
                                     </View>
                                 </TouchableOpacity>
-                            })}
+                            })
+                                :
+                                <Text style={{ width: '100%', fontSize: 15, textAlign: 'center', marginTop: 300 }}>No One Online</Text>
+                            }
                         </ScrollView>
                 }
             </View >
