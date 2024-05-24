@@ -126,7 +126,7 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                                     </TouchableOpacity>
                                 } else {
                                     const type = item.url.split('___')[0].split('/')[item.url.split('___')[0].split('/').length - 1]
-                                    return <TouchableOpacity onLongPress={() => handleTouchHover()} key={index} style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 10, width: '100%' }}>
+                                    return <TouchableOpacity onPress={() => navigation.navigate("Read", { url: item.url })} onLongPress={() => handleTouchHover()} key={index} style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 10, width: '100%' }}>
                                         <Image source={fileTypes[type]} style={{ width: 50, aspectRatio: 1 }} />
                                         <View style={{ flexDirection: 'column', width: 300, gap: 1 }}>
                                             <Text style={{ lineHeight: 18, fontSize: 13, fontWeight: '700' }}>{`${item.name}.${type}`.length >= 13 ? `${item.name}.${type}`.substring(0, 13) + "..." : `${item.name}.${type}`}</Text>

@@ -20,6 +20,7 @@ import TransferMessageScreen from './screens/transferMessageScreen';
 import QRCodeScanner from './screens/QRCodeScannerScreen';
 import LockScreen from './screens/lockScreen';
 import NotificationScreen from './screens/notificationScreen';
+import Read from './screens/viewFileScreen';
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
@@ -105,6 +106,10 @@ const Routes = () => {
         {
             name: 'Notification',
             component: NotificationScreen
+        },
+        {
+            name: 'Read',
+            component: Read
         }
     ]
 
