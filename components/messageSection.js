@@ -3,9 +3,12 @@ import { Animated, Image, Pressable, Text, TouchableOpacity, View, ActivityIndic
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import docx from '../assets/docx.png'
-import excel from '../assets/excel.png'
+import xlsx from '../assets/xlsx.png'
 import file from '../assets/file.png'
+import rar from '../assets/rar.png'
 import pdf from '../assets/pdf.png'
+import pptx from '../assets/pptx.png'
+import text from '../assets/text.png'
 import { Video } from 'expo-av'
 import VideoPlayer from './videoPlayer'
 import AudioPlayer from './audioPlayer'
@@ -18,9 +21,12 @@ import { globalContext } from '../context/globalContext';
 const socket = io.connect(baseURL)
 export const fileTypes = {
     docx: docx,
-    excel,
+    xlsx,
     file,
-    pdf
+    pdf,
+    rar,
+    pptx,
+    text
 }
 
 const MessageSection = ({ id, message, style, information, avatar, disabled, setDisplayEmoji, displayEmoji }) => {

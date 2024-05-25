@@ -15,7 +15,6 @@ const AddFriendLayout = () => {
 
     const options = [
         { label: 'Name', value: 'name' },
-        { label: 'Gmail', value: 'email' },
         { label: 'Phone', value: 'phone' }
     ];
     const navigation = useNavigation()

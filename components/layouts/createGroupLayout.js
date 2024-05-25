@@ -50,7 +50,6 @@ const CreateGroupLayout = () => {
     };
     const options = [
         { label: 'Name', value: 'name' },
-        { label: 'Gmail', value: 'email' },
         { label: 'Phone', value: 'phone' }
     ];
 
