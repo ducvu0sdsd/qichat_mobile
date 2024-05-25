@@ -83,7 +83,7 @@ const InformationUserScreen = () => {
             }
 
             if (!user?.dateOfBirth || new Date().getFullYear() - new Date(user?.dateOfBirth).getFullYear() - (new Date().getMonth() < new Date(user?.dateOfBirth).getMonth() || (new Date().getMonth() === new Date(user?.dateOfBirth).getMonth() && new Date().getDate() < new Date(user?.dateOfBirth).getDate())) < 12) {
-                handler.showAlert("Fail", "Invalid Date Of Birth")
+                handler.showAlert("Warning", "Age must be at least 12")
                 return;
             }
             user.avatar = image
