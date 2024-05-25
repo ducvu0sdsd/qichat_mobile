@@ -28,17 +28,16 @@ const SignUpScreen = () => {
 
     const handleSignUpWithPhoneNumber = async () => {
         if (!/^\d{10}$/.test(phone)) {
-            console.log('Invalid Phone')
-            // handler.showAlert('Warning', 'Invalid Phone', () => { }, () => { })
+            handler.showAlert("Warning", 'Invalid Phone')
             return
         }
         if (password.length < 6) {
-            console.log("Password must be getter than 6 characters")
+            handler.showAlert("Warning", "Password must be getter than 6 characters")
             return
         }
 
         if (confirmPassword !== password) {
-            console.log("Confirm Password must be match with password")
+            handler.showAlert("Warning", "Confirm Password must be match with password")
             return
         }
         api({ body: { phone: formatPhoneByFireBase(phone), password }, path: '/sign-up', type: TypeHTTP.POST, sendToken: false })

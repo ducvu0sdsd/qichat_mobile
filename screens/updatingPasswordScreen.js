@@ -1,23 +1,26 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import bg from '../assets/bg-dung.jpg'
 import banner from '../assets/banner.png'
 import Logo from '../components/logo'
 import { TypeHTTP, api, systemID } from '../utils/api'
+import { useNavigation } from '@react-navigation/native'
+import { globalContext } from '../context/globalContext'
 
 
 const UpdatingPassword = ({ setCurrentStep, user }) => {
+    const navigation = useNavigation()
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
+    const { handler } = useContext(globalContext)
 
     const handleConfirm = () => {
         if (newPassword.length < 6) {
-            console.log('New Password must be at least 6 characters')
-            // handler.notify(notifyType.WARNING, 'New Password must be at least 6 characters')
+            handler.showAlert("Warning", 'New Password must be at least 6 characters')
             return
         }
         if (newPassword !== confirmNewPassword) {
-            console.log("Confirm Password must be match with password")
+            handler.showAlert("Warning", "Confirm Password must be match with password")
             return
         }
         api({ type: TypeHTTP.PUT, path: `/users/update-forgot-password/${user?._id}`, body: { password: systemID, newPassword } })
@@ -27,6 +30,7 @@ const UpdatingPassword = ({ setCurrentStep, user }) => {
                 navigation.navigate('SignInScreen')
             })
             .catch(error => {
+                console.log(error)
                 console.log("Update Password Failed")
                 // handler.notify(notifyType.FAIL, "Update Password Failed")
             })

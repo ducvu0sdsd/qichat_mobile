@@ -304,12 +304,12 @@ const MessageInformationScreen = () => {
                                             <TextInput onChangeText={e => setGroupName(e)} value={groupName} style={{ borderWidth: 1, width: 100, paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10, borderColor: '#999', fontSize: 15 }} />
                                             <TouchableOpacity onPress={() => handleUpdateGroupName()} style={{ backgroundColor: 'green', height: 30, borderRadius: 10, alignItems: 'center', width: 30, flexDirection: 'row', justifyContent: 'center' }}>
                                                 <Text style={{ color: 'white', fontSize: 16 }}>
-                                                    +
+                                                    Save
                                                 </Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => setEditName(false)} style={{ backgroundColor: '#ff4848', height: 30, borderRadius: 10, alignItems: 'center', width: 30, flexDirection: 'row', justifyContent: 'center' }}>
                                                 <Text style={{ color: 'white', fontSize: 16 }}>
-                                                    -
+                                                    Quit
                                                 </Text>
                                             </TouchableOpacity>
                                         </>
@@ -371,7 +371,7 @@ const MessageInformationScreen = () => {
                             :
                             files.map((file, index) => {
                                 if (file.url.split('___')[0].split('/')[file.url.split('___')[0].split('/').length - 1] !== 'audio' && index >= files.length - 2) {
-                                    return <TouchableOpacity key={index} style={{ flexDirection: 'row', marginTop: 12, alignItems: 'center', gap: 10 }}>
+                                    return <TouchableOpacity onPress={() => navigation.navigate("Read", { url: file.url })} key={index} style={{ flexDirection: 'row', marginTop: 12, alignItems: 'center', gap: 10 }}>
                                         <Image style={{ width: 35, aspectRatio: 1 }} source={fileTypes[file.url.split('___')[0].split('/')[file.url.split('___')[0].split('/').length - 1]]} />
                                         <Text style={{ fontSize: 16, fontWeight: '600' }}>{`${file.name.substring(0, 25)}${file.name.length >= 25 ? '...' : `.${file.url.split('___')[0].split('/')[file.url.split('___')[0].split('/').length - 1]}`}`}</Text>
                                     </TouchableOpacity>

@@ -89,7 +89,6 @@ const InformationUserScreen = () => {
             user.avatar = image
             api({ type: TypeHTTP.PUT, path: `/users/update-information-mobile/${user._id}`, sendToken: true, body: user })
                 .then(res => {
-                    console.log(res)
                     handler.showAlert("Success", "Update Information Successfully")
                     handler.setUser(res)
                 })
@@ -104,25 +103,21 @@ const InformationUserScreen = () => {
     const handleSubmitPassword = () => {
 
         if (password.length < 6) {
-            console.log('Password must be at least 6 characters')
-            // handler.notify(notifyType.WARNING, 'Password must be at least 6 characters')
+            handler.showAlert("Warning", "Password must be at least 6 characters")
             return
         }
         if (newPassWord.length < 6) {
-            console.log('New password must be at least 6 characters')
-            // handler.notify(notifyType.WARNING, 'New password must be at least 6 characters')
+            handler.showAlert("Warning", "New Password must be at least 6 characters")
             return
         }
 
         if (newPassWord === password) {
-            console.log('New password must be different from password')
-            // handler.notify(notifyType.WARNING, 'New password must be different from password')
+            handler.showAlert("Warning", 'New password must be different from password')
             return
         }
 
         if (confirmPassWord !== newPassWord) {
-            console.log('The new password must match the confirm password')
-            // handler.notify(notifyType.WARNING, 'The new password must match the confirm password')
+            handler.showAlert("Warning", 'The new password must match the confirm password')
             return
         }
         api({ sendToken: true, type: TypeHTTP.PUT, path: `/users/update-password/${user?._id}`, body: { password, newPassword: newPassWord } })
