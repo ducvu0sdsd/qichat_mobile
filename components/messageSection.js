@@ -217,7 +217,7 @@ const MessageSection = ({ id, message, style, information, avatar, disabled, set
                 </View>
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
                     {messageData.usersSeen?.filter(item => (item._id !== data.user?._id && item.seen === message._id)).map((user, index) =>
-                        <Image source={{ uri: user.avatar }} style={{ height: 15, width: 15, borderRadius: 15 }} />
+                        <Image key={index} source={{ uri: user.avatar }} style={{ height: 15, width: 15, borderRadius: 15 }} />
                     )}
                 </View>
             </View >
