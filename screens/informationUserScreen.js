@@ -90,7 +90,7 @@ const InformationUserScreen = () => {
             api({ type: TypeHTTP.PUT, path: `/users/update-information-mobile/${user._id}`, sendToken: true, body: user })
                 .then(res => {
                     console.log(res)
-                    handler.showAlert("Success", "Success")
+                    handler.showAlert("Success", "Update Information Successfully")
                     handler.setUser(res)
                 })
                 .catch(error => {

@@ -31,8 +31,7 @@ const SignInScreen = () => {
 
     const handleSignInWithPhoneNumber = async () => {
         if (!/^\d{10}$/.test(phone)) {
-            console.log('Invalid Phone')
-            // handler.showAlert('Warning', 'Invalid Phone', () => { }, () => { })
+            handler.showAlert('Warning', 'Invalid Phone', () => { }, () => { })
             return
         }
         if (password.length < 6) {

@@ -21,7 +21,6 @@ const UserProfileScreen = () => {
 
 
     useEffect(() => {
-        console.log(userInfo)
         setUser(userInfo)
         if (userInfo)
             api({ type: TypeHTTP.POST, sendToken: true, path: '/requests/get-by-2-user', body: { user_id1: userInfo?._id, user_id2: data.user?._id } })
